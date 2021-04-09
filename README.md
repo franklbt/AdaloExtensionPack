@@ -1,4 +1,4 @@
-![nuget](https://img.shields.io/nuget/v/AdaloExtensionPack.Core)
+[![nuget](https://img.shields.io/nuget/v/AdaloExtensionPack.Core)](https://www.nuget.org/packages/AdaloExtensionPack.Core)
 
 # AdaloExtensionPack
 
