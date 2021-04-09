@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <PackageId>AdaloExtensionPack.Core</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>Frank LIBOLT</Authors>
+        <Company>Frank LIBOLT</Company>
+        <PackageTags>
+            Adalo;dotnet;ApiKey;Fonts;Smtp:Emails
+        </PackageTags>
+        <Description>
+            Helpers to connect C# Web app to Adalo tables API
+        </Description>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CaseExtensions" Version="1.0.3" />
+      <PackageReference Include="Humanizer.Core" Version="2.8.26" />
+      <PackageReference Include="SkiaSharp" Version="2.80.2" />
+    </ItemGroup>
+</Project>
