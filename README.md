@@ -19,7 +19,7 @@ In the Startup.cs file add in the method ConfigureServices() :
      
 Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect to Adalo tables API.
 
-> Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.AdaloEntity`
+> Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.Adalo.AdaloEntity`
 
 ### Cached table
 
