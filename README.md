@@ -38,9 +38,9 @@ Views are filtered and mapped collections available through a controller GET act
 You can create a view by add this line inside the AddAdalo() call:
 
     x.AddView<SomeContext, SomeEntity, SomeProjection>(
-        sp => new SomeContext(),
-        (c, se) => true, // Predicate
-        (c, se) => new SomeProjection(se)); // Mapping
+        serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
+        (ctx, entity) => true, // Predicate
+        (ctx, entity) => new SomeProjection(se)); // Mapping
         
 This will generate this method:
         
