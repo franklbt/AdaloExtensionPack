@@ -35,7 +35,7 @@ You can also access theses cached tables from your code with the class `AdaloTab
 
 Views are filtered and mapped collections available through a controller GET action.
 
-You can create a view by add this line inside the AddAdalo() call:
+You can create a view by add this line inside the `AddAdalo()` call:
 
     x.AddView<SomeContext, SomeEntity, SomeProjection>(
         serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
