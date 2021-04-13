@@ -40,7 +40,7 @@ You can create a view by add this line inside the AddAdalo() call:
     x.AddView<SomeContext, SomeEntity, SomeProjection>(
         serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
         (ctx, entity) => true, // Predicate
-        (ctx, entity) => new SomeProjection(se)); // Mapping
+        (ctx, entity) => new SomeProjection(entity)); // Mapping
         
 This will generate this method:
         
