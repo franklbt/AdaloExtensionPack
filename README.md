@@ -1,6 +1,6 @@
 # AdaloExtensionPack
 
-[![nuget](https://img.shields.io/nuget/v/AdaloExtensionPack.Core)](https://www.nuget.org/packages/AdaloExtensionPack.Core)
+[![nuget](https://img.shields.io/nuget/v/AdaloExtensionPack.Core)](https://www.nuget.org/packages/AdaloExtensionPack.Core) ![downloads](https://img.shields.io/nuget/dt/AdaloExtensionPack.Core)
 
 Helpers to connect C# Web app to Adalo tables API
 
