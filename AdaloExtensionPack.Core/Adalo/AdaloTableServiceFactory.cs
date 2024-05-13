@@ -7,23 +7,21 @@ namespace AdaloExtensionPack.Core.Adalo
     public class AdaloTableServiceFactory : IAdaloTableServiceFactory
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly AdaloAppOptions _options;
 
-        public AdaloTableServiceFactory(IHttpClientFactory httpClientFactory, IOptions<AdaloAppOptions> options)
+        public AdaloTableServiceFactory(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _options = options.Value;
         }
 
-        public IAdaloTableService<T> Create<T>(string tableId)
+        public IAdaloTableService<T> Create<T>(AdaloAppOptions options, string tableId)
         {
-            return new AdaloTableService<T>(_httpClientFactory, _options.AppId, _options.Token, tableId);
+            return new AdaloTableService<T>(_httpClientFactory, options.AppId, options.Token, tableId);
         }
 
-        public object Create(Type type, string tableId)
+        public object Create(Type type, AdaloAppOptions options, string tableId)
         {
             return Activator.CreateInstance(typeof(AdaloTableService<>).MakeGenericType(type),
-                new object[] {_httpClientFactory, _options.AppId, _options.Token, tableId});
+                new object[] {_httpClientFactory, options.AppId, options.Token, tableId});
         }
     }
 }

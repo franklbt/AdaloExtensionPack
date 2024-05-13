@@ -25,18 +25,19 @@ namespace AdaloExtensionPack.Core.Adalo
                     services.AddScoped(
                         typeof(IAdaloTableService<>).MakeGenericType(tablesType.Key),
                         s => s.GetService<IAdaloTableServiceFactory>()
-                            ?.Create(tablesType.Key, tablesType.Value.TableId));
+                            ?.Create(tablesType.Key, option, tablesType.Value.TableId));
+                    
                     if (tablesType.Value.IsCached)
                     {
                         services.AddScoped(typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
                     }
                 }
 
-                foreach (var viewTypes in option.ViewTypes)
+                foreach (var viewType in option.ViewTypes)
                 {
                     services.AddScoped(
-                        typeof(IAdaloViewService<,,>).MakeGenericType(viewTypes.GetType().GenericTypeArguments),
-                        typeof(AdaloViewService<,,>).MakeGenericType(viewTypes.GetType().GenericTypeArguments));
+                        typeof(IAdaloViewService<,,>).MakeGenericType(viewType.GetType().GenericTypeArguments),
+                        typeof(AdaloViewService<,,>).MakeGenericType(viewType.GetType().GenericTypeArguments));
                 }
             }
 
