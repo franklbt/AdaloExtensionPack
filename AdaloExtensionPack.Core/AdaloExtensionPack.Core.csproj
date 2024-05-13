@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <PackageId>AdaloExtensionPack.Core</PackageId>
         <Version>0.2.0</Version>
         <Authors>Frank LIBOLT</Authors>
@@ -14,6 +14,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/franklbt/AdaloExtensionPack</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
