@@ -7,7 +7,7 @@ namespace AdaloExtensionPack.Core.Adalo
 {
     public interface IAdaloTableService<T>
     {
-        Task<List<T>> GetAllAsync(params (Expression<Func<T, object>> Predicate, object Value)[] predicates);
+        Task<List<T>> GetAllAsync((Expression<Func<T, object>> Predicate, object Value)? predicate = null);
         Task<T> PostAsync(T payload);
         Task<T> GetAsync(int recordId);
         Task DeleteAsync(int recordId);

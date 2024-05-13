@@ -26,19 +26,25 @@ namespace AdaloExtensionPack.Core.Adalo
         }
 
         public async Task<List<T>> GetAllAsync(
-            params (Expression<Func<T, object>> Predicate, object Value)[] predicates)
+            (Expression<Func<T, object>> Predicate, object Value)? predicate = null)
         {
             var url = GetUrl();
-            var filters = predicates is { Length: > 0 }
-                ? predicates
-                    .Where(x => x.Predicate.Body is MemberExpression)
-                    .Select(x => (((MemberExpression)x.Predicate.Body).Member.Name, x.Value))
-                    .ToDictionary(x => x.Name, x => x.Value.ToString())
-                : new Dictionary<string, string>();
-            
-            var finalUrl = QueryHelpers.AddQueryString(url, filters);
-            
-            return await _client.GetFromJsonAsync<List<T>>(finalUrl);
+            var filter = predicate is { Predicate.Body: MemberExpression m }
+                ? (m.Member.Name, predicate.Value.Value)
+                : default;
+
+            if (filter != default)
+            {
+                var param = new Dictionary<string, string>
+                {
+                    ["filterKey"] = filter.Name,
+                    ["filterValue"] = filter.Value.ToString()
+                };
+
+                url = QueryHelpers.AddQueryString(url, param);
+            }
+
+            return await _client.GetFromJsonAsync<List<T>>(url);
         }
 
         public async Task<T> PostAsync(T payload)
