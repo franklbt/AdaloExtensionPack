@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
@@ -22,10 +25,20 @@ namespace AdaloExtensionPack.Core.Adalo
             _client = GetHttpClient(token);
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(
+            params (Expression<Func<T, object>> Predicate, object Value)[] predicates)
         {
             var url = GetUrl();
-            return await _client.GetFromJsonAsync<List<T>>(url);
+            var filters = predicates is { Length: > 0 }
+                ? predicates
+                    .Where(x => x.Predicate.Body is MemberExpression)
+                    .Select(x => (((MemberExpression)x.Predicate.Body).Member.Name, x.Value))
+                    .ToDictionary(x => x.Name, x => x.Value.ToString())
+                : new Dictionary<string, string>();
+            
+            var finalUrl = QueryHelpers.AddQueryString(url, filters);
+            
+            return await _client.GetFromJsonAsync<List<T>>(finalUrl);
         }
 
         public async Task<T> PostAsync(T payload)
