@@ -7,9 +7,9 @@ namespace AdaloExtensionPack.Core.Adalo
     public class AdaloTableServiceFactory : IAdaloTableServiceFactory
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly AdaloOptions _options;
+        private readonly AdaloAppOptions _options;
 
-        public AdaloTableServiceFactory(IHttpClientFactory httpClientFactory, IOptions<AdaloOptions> options)
+        public AdaloTableServiceFactory(IHttpClientFactory httpClientFactory, IOptions<AdaloAppOptions> options)
         {
             _httpClientFactory = httpClientFactory;
             _options = options.Value;

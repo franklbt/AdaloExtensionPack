@@ -44,7 +44,7 @@ namespace AdaloExtensionPack.Core.ApiKey
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, "System")
+                new(ClaimTypes.Name, "System")
             };
 
             var identity = new ClaimsIdentity(claims, Options.AuthenticationType);

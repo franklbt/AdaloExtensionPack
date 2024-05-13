@@ -18,7 +18,8 @@ namespace AdaloExtensionPack.Core.Adalo
 
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
-            var tables = _options.TablesTypes
+            var tables = _options.Apps
+                .SelectMany(x => x.TablesTypes)
                 .Where(x => x.Value.IsCached)
                 .Select(x => x.Key)
                 .ToList();
@@ -28,16 +29,19 @@ namespace AdaloExtensionPack.Core.Adalo
                 feature.Controllers.Add(
                     typeof(AdaloTableCacheController<>).MakeGenericType(candidate).GetTypeInfo()
                 );
-            } 
-            var views = _options.ViewTypes  
+            }
+
+            var views = _options.Apps
+                .SelectMany(x => x.ViewTypes)
                 .ToList();
 
             foreach (var candidate in views)
             {
                 feature.Controllers.Add(
-                    typeof(AdaloViewController<,,>).MakeGenericType(candidate.GetType().GenericTypeArguments).GetTypeInfo()
+                    typeof(AdaloViewController<,,>).MakeGenericType(candidate.GetType().GenericTypeArguments)
+                        .GetTypeInfo()
                 );
-            } 
+            }
         }
     }
 }

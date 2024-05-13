@@ -9,9 +9,9 @@ namespace AdaloExtensionPack.Core.Adalo
     public class AdaloViewService<TContext, TBase, TResult> : IAdaloViewService<TContext, TBase, TResult> where TBase : AdaloEntity
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly AdaloOptions _options;
+        private readonly AdaloAppOptions _options;
 
-        public AdaloViewService(IOptions<AdaloOptions> options, IServiceProvider serviceProvider)
+        public AdaloViewService(IOptions<AdaloAppOptions> options, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _options = options.Value;

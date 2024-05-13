@@ -17,26 +17,31 @@ namespace AdaloExtensionPack.Core.Adalo
             var options = services.BuildServiceProvider().GetService<IOptions<AdaloOptions>>()?.Value;
             if (options == null)
                 return services;
-            
-            foreach (var tablesType in options.TablesTypes)
+
+            foreach (var option in options.Apps)
             {
-                services.AddScoped(
-                    typeof(IAdaloTableService<>).MakeGenericType(tablesType.Key), 
-                    s => s.GetService<IAdaloTableServiceFactory>()?.Create(tablesType.Key, tablesType.Value.TableId));
-                if (tablesType.Value.IsCached)
+                foreach (var tablesType in option.TablesTypes)
                 {
-                    services.AddScoped(typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
+                    services.AddScoped(
+                        typeof(IAdaloTableService<>).MakeGenericType(tablesType.Key),
+                        s => s.GetService<IAdaloTableServiceFactory>()
+                            ?.Create(tablesType.Key, tablesType.Value.TableId));
+                    if (tablesType.Value.IsCached)
+                    {
+                        services.AddScoped(typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
+                    }
                 }
-            }
-            foreach (var viewTypes in options.ViewTypes)
-            {
-                services.AddScoped(
-                    typeof(IAdaloViewService<,,>).MakeGenericType(viewTypes.GetType().GenericTypeArguments), 
-                    typeof(AdaloViewService<,,>).MakeGenericType(viewTypes.GetType().GenericTypeArguments)); 
+
+                foreach (var viewTypes in option.ViewTypes)
+                {
+                    services.AddScoped(
+                        typeof(IAdaloViewService<,,>).MakeGenericType(viewTypes.GetType().GenericTypeArguments),
+                        typeof(AdaloViewService<,,>).MakeGenericType(viewTypes.GetType().GenericTypeArguments));
+                }
             }
 
             services
-                .AddControllers(o => o.Conventions.Add(new AdaloControllerConvention(options)))
+                .AddControllers(o => o.Conventions.Add(new AdaloControllerConvention()))
                 .ConfigureApplicationPartManager(m =>
                     m.FeatureProviders.Add(new AdaloControllerFeatureProvider(options)));
 

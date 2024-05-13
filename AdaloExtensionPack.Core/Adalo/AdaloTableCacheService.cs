@@ -10,11 +10,11 @@ namespace AdaloExtensionPack.Core.Adalo
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IAdaloTableService<T> _adaloService;
-        private readonly AdaloOptions _options;
+        private readonly AdaloAppOptions _options;
 
         public AdaloTableCacheService(IMemoryCache memoryCache,
             IAdaloTableService<T> adaloService,
-            IOptions<AdaloOptions> options)
+            IOptions<AdaloAppOptions> options)
         {
             _memoryCache = memoryCache;
             _adaloService = adaloService;

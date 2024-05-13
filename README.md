@@ -12,9 +12,9 @@ In the Startup.cs file add in the method ConfigureServices() :
 
      services.AddAdalo(x =>
      {
-         x.Token = "[your API token here]";
-         x.AppId = Guid.Parse("[your Adalo App Id]");
-         x.AddTable<SomeEntity>("[table Id]", cached: false);
+         x.AddApplication("[your Adalo App Id]", "[your API token here]")
+            .AddTable<SomeEntity>("[table Id]", cached: false)
+            .AddTable<SomeEntity>("[table Id 2]", cached: true);
      });
      
 Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect to Adalo tables API.
@@ -27,7 +27,7 @@ If the `cached` parameter is set to the `true` value in the call to `AddTable`, 
 
 ![cached endpoints](https://i.imgur.com/ZGPUPYQ.png)
 
-Theses controllers can be used as external collections in Adalo to improve performances of your tables.
+These controllers can be used as external collections in Adalo to improve performances of your tables.
 
 You can also access theses cached tables from your code with the class `AdaloTableCacheService<SomeEntity>`
 
@@ -37,10 +37,11 @@ Views are filtered and mapped collections available through a controller GET act
 
 You can create a view by add this line inside the `AddAdalo()` call:
 
-    x.AddView<SomeContext, SomeEntity, SomeProjection>(
-        serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
-        (ctx, entity) => true, // Predicate
-        (ctx, entity) => new SomeProjection(entity)); // Mapping
+    x.AddApplication("[your Adalo App Id]", "[your API token here]")
+        .AddView<SomeContext, SomeEntity, SomeProjection>(
+            serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
+            (ctx, entity) => true, // Predicate
+            (ctx, entity) => new SomeProjection(entity)); // Mapping
         
 This will generate this method:
         

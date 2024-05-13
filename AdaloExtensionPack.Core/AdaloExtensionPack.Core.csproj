@@ -2,17 +2,14 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-
         <PackageId>AdaloExtensionPack.Core</PackageId>
-        <Version>0.1.1</Version>
+        <Version>0.2.0</Version>
         <Authors>Frank LIBOLT</Authors>
         <Company>Frank LIBOLT</Company>
         <PackageTags>
             Adalo;dotnet;Api
         </PackageTags>
-        <Description>
-            Helpers to connect C# Web app to Adalo tables API
-        </Description>
+        <PackageReadmeFile>../README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/franklbt/AdaloExtensionPack</RepositoryUrl>

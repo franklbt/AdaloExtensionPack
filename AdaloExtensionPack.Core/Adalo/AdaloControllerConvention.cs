@@ -8,13 +8,6 @@ namespace AdaloExtensionPack.Core.Adalo
 {
     public class AdaloControllerConvention : IControllerModelConvention
     {
-        private readonly AdaloOptions _options;
-
-        public AdaloControllerConvention(AdaloOptions options)
-        {
-            _options = options;
-        }
-
         public void Apply(ControllerModel controller)
         {
             if (!controller.ControllerType.IsGenericType) return;
