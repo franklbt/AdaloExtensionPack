@@ -4,11 +4,11 @@
 
 Helpers to connect C# Web app to Adalo tables API
 
-# Usage 
+# Usage
 
 ### Classic table
 
-In the Startup.cs file add in the method ConfigureServices() : 
+In the Startup.cs file add in the method ConfigureServices() :
 
      services.AddAdalo(x =>
      {
@@ -16,14 +16,16 @@ In the Startup.cs file add in the method ConfigureServices() :
             .AddTable<SomeEntity>("[table Id]", cached: false)
             .AddTable<SomeEntity>("[table Id 2]", cached: true);
      });
-     
-Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect to Adalo tables API.
+
+Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect directly to Adalo tables API,
+or `IAdaloTableCacheService<SomeEntity>` to add a cache layer between Adalo and your app.
 
 > Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.Adalo.AdaloEntity`
 
 ### Cached table
 
-If the `cached` parameter is set to the `true` value in the call to `AddTable`, a controller with methods to create, read, update and delete this type of entities will be generated:
+If the `cached` parameter is set to the `true` value in the call to `AddTable`, a controller with methods to create,
+read, update and delete this type of entities will be generated:
 
 ![cached endpoints](https://i.imgur.com/ZGPUPYQ.png)
 
@@ -42,7 +44,7 @@ You can create a view by add this line inside the `AddAdalo()` call:
             serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
             (ctx, entity) => true, // Predicate
             (ctx, entity) => new SomeProjection(entity)); // Mapping
-        
+
 This will generate this method:
-        
+
 ![endponts views](https://i.imgur.com/KBTHjBi.png)

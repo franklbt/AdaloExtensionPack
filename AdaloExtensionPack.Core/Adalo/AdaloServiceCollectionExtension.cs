@@ -29,7 +29,9 @@ namespace AdaloExtensionPack.Core.Adalo
                     
                     if (tablesType.Value.IsCached)
                     {
-                        services.AddScoped(typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
+                        services.AddScoped(
+                            typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Key),
+                            typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
                     }
                 }
 

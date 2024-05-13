@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
-    public class AdaloTableCacheService<T> where T : AdaloEntity
+    public class AdaloTableCacheService<T> : IAdaloTableCacheService<T> where T : AdaloEntity
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IAdaloTableService<T> _adaloService;

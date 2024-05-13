@@ -58,7 +58,7 @@ namespace AdaloExtensionPack.Core.Adalo
         private static string GetMemberName(MemberExpression m)
         {
             return ((JsonPropertyNameAttribute)m.Member
-                       .GetCustomAttribute(typeof(JsonPropertyNameAttribute), false))?.Name
+                       .GetCustomAttribute(typeof(JsonPropertyNameAttribute), true))?.Name
                    ?? m.Member.Name;
         }
 
