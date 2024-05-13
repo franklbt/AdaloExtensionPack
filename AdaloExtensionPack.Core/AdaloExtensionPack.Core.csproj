@@ -9,7 +9,7 @@
         <PackageTags>
             Adalo;dotnet;Api
         </PackageTags>
-        <PackageReadmeFile>../README.md</PackageReadmeFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/franklbt/AdaloExtensionPack</RepositoryUrl>
@@ -17,12 +17,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CaseExtensions" Version="1.1.0" />
-      <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-      <PackageReference Include="SkiaSharp" Version="2.88.8" />
+        <PackageReference Include="CaseExtensions" Version="1.1.0"/>
+        <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
+        <PackageReference Include="SkiaSharp" Version="2.88.8"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 </Project>
