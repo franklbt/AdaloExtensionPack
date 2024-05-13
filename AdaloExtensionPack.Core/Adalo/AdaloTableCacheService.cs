@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,11 +11,11 @@ namespace AdaloExtensionPack.Core.Adalo
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IAdaloTableService<T> _adaloService;
-        private readonly AdaloAppOptions _options;
+        private readonly AdaloOptions _options;
 
         public AdaloTableCacheService(IMemoryCache memoryCache,
             IAdaloTableService<T> adaloService,
-            IOptions<AdaloAppOptions> options)
+            IOptions<AdaloOptions> options)
         {
             _memoryCache = memoryCache;
             _adaloService = adaloService;
@@ -23,16 +24,26 @@ namespace AdaloExtensionPack.Core.Adalo
 
         public async Task<List<T>> GetAllAsync()
         {
-            var tableId = _options.TablesTypes[typeof(T)]; 
+            var tableTypes = GetAllTableTypes();
+
+            var tableId = tableTypes[typeof(T)];
             var result = await _memoryCache.GetOrCreateAsync(tableId,
                 async _ => await _adaloService.GetAllAsync());
             return result;
         }
 
+        private Dictionary<Type, AdaloTableOptions> GetAllTableTypes()
+        {
+            return _options.Apps
+                .SelectMany(x => x.TablesTypes)
+                .ToDictionary(x => x.Key, x => x.Value);
+        }
+
         public async Task<T> PostAsync(
             T payload)
         {
-            var tableId = _options.TablesTypes[typeof(T)]; 
+            var tableTypes = GetAllTableTypes();
+            var tableId = tableTypes[typeof(T)];
             var result = await _adaloService.PostAsync(payload);
             if (_memoryCache.TryGetValue<List<T>>(tableId, out var collection))
             {
@@ -46,7 +57,8 @@ namespace AdaloExtensionPack.Core.Adalo
         public async Task<T> GetAsync(
             int recordId)
         {
-            var tableId = _options.TablesTypes[typeof(T)]; 
+            var tableTypes = GetAllTableTypes();
+            var tableId = tableTypes[typeof(T)];
             var table = await _memoryCache.GetOrCreateAsync(tableId,
                 async _ => await _adaloService.GetAllAsync());
 
@@ -58,7 +70,8 @@ namespace AdaloExtensionPack.Core.Adalo
         public async Task DeleteAsync(
             int recordId)
         {
-            var tableId = _options.TablesTypes[typeof(T)]; 
+            var tableTypes = GetAllTableTypes();
+            var tableId = tableTypes[typeof(T)];
             await _adaloService.DeleteAsync(recordId);
             if (_memoryCache.TryGetValue<List<T>>(tableId, out var collection))
             {
@@ -71,11 +84,12 @@ namespace AdaloExtensionPack.Core.Adalo
             int recordId,
             T payload)
         {
-            var tableId = _options.TablesTypes[typeof(T)]; 
+            var tableTypes = GetAllTableTypes();
+            var tableId = tableTypes[typeof(T)];
             var result = await _adaloService.PutAsync(recordId, payload);
             if (_memoryCache.TryGetValue<List<T>>(tableId, out var collection))
             {
-                collection = collection.Where(x => x.Id != recordId).Concat(new[] {result}).ToList();
+                collection = collection.Where(x => x.Id != recordId).Concat(new[] { result }).ToList();
                 _memoryCache.Set(tableId, collection);
             }
 

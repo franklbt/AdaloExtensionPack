@@ -9,9 +9,9 @@ namespace AdaloExtensionPack.Core.Adalo
     public class AdaloViewService<TContext, TBase, TResult> : IAdaloViewService<TContext, TBase, TResult> where TBase : AdaloEntity
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly AdaloAppOptions _options;
+        private readonly AdaloOptions _options;
 
-        public AdaloViewService(IOptions<AdaloAppOptions> options, IServiceProvider serviceProvider)
+        public AdaloViewService(IOptions<AdaloOptions> options, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _options = options.Value;
@@ -19,7 +19,7 @@ namespace AdaloExtensionPack.Core.Adalo
 
         public async Task<List<TResult>> GetAllAsync()
         {
-            var view = _options.ViewTypes.FirstOrDefault(x =>
+            var view = _options.Apps.SelectMany(x => x.ViewTypes).FirstOrDefault(x =>
             {
                 var type = x.GetType();
                 var compareType = typeof(AdaloViewService<TContext, TBase, TResult>);
