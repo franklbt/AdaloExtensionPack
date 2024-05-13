@@ -5,6 +5,8 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -12,6 +14,7 @@ namespace AdaloExtensionPack.Core.Adalo
 {
     public class AdaloTableService<T> : IAdaloTableService<T>
     {
+        private const string JsonPropertyNameAttributeName = "JsonPropertyNameAttribute";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly Guid _appId;
         private readonly string _tableId;
@@ -25,12 +28,17 @@ namespace AdaloExtensionPack.Core.Adalo
             _client = GetHttpClient(token);
         }
 
+        /// <summary>
+        /// Get all records for a table
+        /// </summary>
+        /// <param name="predicate">A filter on one field sent to the server. Must be a simple field (text, number, bool, date & time - not array)</param>
+        /// <returns>A list of records</returns>
         public async Task<List<T>> GetAllAsync(
             (Expression<Func<T, object>> Predicate, object Value)? predicate = null)
         {
             var url = GetUrl();
             var filter = predicate is { Predicate.Body: MemberExpression m }
-                ? (m.Member.Name, predicate.Value.Value)
+                ? (Name: GetMemberName(m), predicate.Value.Value)
                 : default;
 
             if (filter != default)
@@ -45,6 +53,13 @@ namespace AdaloExtensionPack.Core.Adalo
             }
 
             return await _client.GetFromJsonAsync<List<T>>(url);
+        }
+
+        private static string GetMemberName(MemberExpression m)
+        {
+            return ((JsonPropertyNameAttribute)m.Member
+                       .GetCustomAttribute(typeof(JsonPropertyNameAttribute), false))?.Name
+                   ?? m.Member.Name;
         }
 
         public async Task<T> PostAsync(T payload)
