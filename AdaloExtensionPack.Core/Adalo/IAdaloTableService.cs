@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
-    public interface IAdaloTableService<T>
+    public interface IAdaloTableService<T> where T: AdaloEntity
     {
         Task<List<T>> GetAllAsync((Expression<Func<T, object>> Predicate, object Value)? predicate = null);
         Task<T> PostAsync(T payload);

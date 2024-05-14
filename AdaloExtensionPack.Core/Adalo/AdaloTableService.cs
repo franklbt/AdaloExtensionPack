@@ -12,9 +12,8 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
-    public class AdaloTableService<T> : IAdaloTableService<T>
+    public abstract class AdaloTableService<T> : IAdaloTableService<T> where T: AdaloEntity
     {
-        private const string JsonPropertyNameAttributeName = "JsonPropertyNameAttribute";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly Guid _appId;
         private readonly string _tableId;
@@ -52,7 +51,10 @@ namespace AdaloExtensionPack.Core.Adalo
                 url = QueryHelpers.AddQueryString(url, param);
             }
 
-            return await _client.GetFromJsonAsync<List<T>>(url);
+            var response = await _client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<GetAllResponse>();
+            return result?.Records ?? [];
         }
 
         private static string GetMemberName(MemberExpression m)
@@ -62,6 +64,11 @@ namespace AdaloExtensionPack.Core.Adalo
                    ?? m.Member.Name;
         }
 
+        /// <summary>
+        /// Create a new record on adalo database
+        /// </summary>
+        /// <param name="payload">The entity to add</param>
+        /// <returns></returns>
         public async Task<T> PostAsync(T payload)
         {
             var url = GetUrl();
@@ -70,12 +77,23 @@ namespace AdaloExtensionPack.Core.Adalo
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
+        /// <summary>
+        /// Get a single record
+        /// </summary>
+        /// <param name="recordId">Id of the record to fetch</param>
+        /// <returns></returns>
         public async Task<T> GetAsync(int recordId)
         {
             var url = GetUrl(recordId);
-            return await _client.GetFromJsonAsync<T>(url);
+            var response = await _client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<T>();
         }
 
+        /// <summary>
+        /// Delete a record on the database
+        /// </summary>
+        /// <param name="recordId">Id of the deleted record</param>
         public async Task DeleteAsync(int recordId)
         {
             var url = GetUrl(recordId);
@@ -83,6 +101,12 @@ namespace AdaloExtensionPack.Core.Adalo
             response.EnsureSuccessStatusCode();
         }
 
+        /// <summary>
+        /// Update a record on Adalo database
+        /// </summary>
+        /// <param name="recordId">Id of the record</param>
+        /// <param name="payload">Entity containing new properties values</param>
+        /// <returns></returns>
         public async Task<T> PutAsync(int recordId, T payload)
         {
             var url = GetUrl(recordId);
@@ -101,7 +125,9 @@ namespace AdaloExtensionPack.Core.Adalo
         private string GetUrl(int? recordId = null)
         {
             return
-                $"https://api.adalo.com/apps/{_appId}/collections/{_tableId}{(recordId != null ? "/" + recordId : "")}";
+                $"https://api.adalo.com/v0/apps/{_appId}/collections/{_tableId}{(recordId != null ? "/" + recordId : "")}";
         }
+
+        private abstract record GetAllResponse(List<T> Records, int Offset);
     }
 }
