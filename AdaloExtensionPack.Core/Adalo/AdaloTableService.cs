@@ -128,7 +128,7 @@ namespace AdaloExtensionPack.Core.Adalo
                 $"https://api.adalo.com/v0/apps/{_appId}/collections/{_tableId}{(recordId != null ? "/" + recordId : "")}";
         }
 
-        private abstract class GetAllResponse
+        private class GetAllResponse
         {
             public List<T> Records { get; init; }
             public int Offset { get; init; }
