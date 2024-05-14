@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -86,7 +87,15 @@ namespace AdaloExtensionPack.Core.Adalo
         {
             var url = GetUrl(recordId);
             var response = await _client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
