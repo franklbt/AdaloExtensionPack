@@ -13,7 +13,7 @@ namespace AdaloExtensionPack.Core.Adalo
             _httpClientFactory = httpClientFactory;
         }
 
-        public IAdaloTableService<T> Create<T>(AdaloAppOptions options, string tableId)
+        public IAdaloTableService<T> Create<T>(AdaloAppOptions options, string tableId) where T: AdaloEntity
         {
             return new AdaloTableService<T>(_httpClientFactory, options.AppId, options.Token, tableId);
         }

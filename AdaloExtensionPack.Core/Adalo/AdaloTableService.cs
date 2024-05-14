@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
-    public abstract class AdaloTableService<T> : IAdaloTableService<T> where T: AdaloEntity
+    public class AdaloTableService<T> : IAdaloTableService<T> where T: AdaloEntity
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly Guid _appId;
