@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
-    public class AdaloTableService<T> : IAdaloTableService<T> where T: AdaloEntity
+    public class AdaloTableService<T> : IAdaloTableService<T> where T : AdaloEntity
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly Guid _appId;
@@ -128,6 +128,10 @@ namespace AdaloExtensionPack.Core.Adalo
                 $"https://api.adalo.com/v0/apps/{_appId}/collections/{_tableId}{(recordId != null ? "/" + recordId : "")}";
         }
 
-        private abstract record GetAllResponse(List<T> Records, int Offset);
+        private abstract class GetAllResponse
+        {
+            public List<T> Records { get; init; }
+            public int Offset { get; init; }
+        }
     }
 }
