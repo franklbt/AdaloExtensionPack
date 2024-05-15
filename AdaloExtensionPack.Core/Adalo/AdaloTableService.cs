@@ -69,7 +69,7 @@ namespace AdaloExtensionPack.Core.Adalo
         /// Create a new record on adalo database
         /// </summary>
         /// <param name="payload">The entity to add</param>
-        /// <returns></returns>
+        /// <returns>The added entity</returns>
         public async Task<T> PostAsync(T payload)
         {
             var url = GetUrl();
@@ -82,7 +82,7 @@ namespace AdaloExtensionPack.Core.Adalo
         /// Get a single record
         /// </summary>
         /// <param name="recordId">Id of the record to fetch</param>
-        /// <returns></returns>
+        /// <returns>The record to get, or null if not found</returns>
         public async Task<T> GetAsync(int recordId)
         {
             var url = GetUrl(recordId);
@@ -115,7 +115,7 @@ namespace AdaloExtensionPack.Core.Adalo
         /// </summary>
         /// <param name="recordId">Id of the record</param>
         /// <param name="payload">Entity containing new properties values</param>
-        /// <returns></returns>
+        /// <returns>The updated record</returns>
         public async Task<T> PutAsync(int recordId, T payload)
         {
             var url = GetUrl(recordId);
