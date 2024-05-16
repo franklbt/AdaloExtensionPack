@@ -124,6 +124,24 @@ namespace AdaloExtensionPack.Core.Adalo
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
+        /// <summary>
+        /// Update a record on Adalo Database using an update action
+        /// </summary>
+        /// <param name="recordId">Id of the record</param>
+        /// <param name="update">Action containing new properties update</param>
+        /// <returns>The updated record</returns>
+        public async Task<T> PutAsync(int recordId, Action<T> update)
+        {
+            var record = await GetAsync(recordId);
+            if (record is null)
+            {
+                return null;
+            }
+
+            update(record);
+            return await PutAsync(recordId, record);
+        }
+
         private HttpClient GetHttpClient(string token)
         {
             var client = _httpClientFactory.CreateClient();
