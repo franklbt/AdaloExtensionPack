@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
@@ -119,9 +120,12 @@ namespace AdaloExtensionPack.Core.Adalo
         public async Task<T> PutAsync(int recordId, T payload)
         {
             var url = GetUrl(recordId);
-            var response = await _client.PutAsJsonAsync(url, payload);
+            var response = await _client.PutAsJsonAsync(url, payload, new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }); 
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>();
+            return payload;
         }
 
         /// <summary>
