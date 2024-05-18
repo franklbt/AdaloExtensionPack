@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AdaloExtensionPack.Core.ApiKey
 {
-    public static class AuthenticationBuilderExtensions
+    internal static class AuthenticationBuilderExtensions
     {
-        public static IServiceCollection AddApiKey(this IServiceCollection services,
+        internal static IServiceCollection AddApiKey(this IServiceCollection services,
             Action<ApiKeyAuthenticationOptions> optionsBuilder)
         {
             services.Configure<MvcOptions>(c =>

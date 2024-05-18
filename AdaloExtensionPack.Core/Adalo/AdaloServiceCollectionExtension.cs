@@ -7,17 +7,15 @@ namespace AdaloExtensionPack.Core.Adalo
 {
     public static class AdaloServiceCollectionExtension
     {
-        public static IServiceCollection AddAdalo(this IServiceCollection services, Action<AdaloOptions> optionsFactory)
+        public static AdaloServiceCollection AddAdalo(this IServiceCollection services, Action<AdaloOptions> optionsFactory)
         {
             services.Configure(optionsFactory);
             services.AddHttpClient();
             services.AddScoped<IAdaloTableServiceFactory, AdaloTableServiceFactory>();
             services.AddMemoryCache();
 
-            var options = services.BuildServiceProvider().GetService<IOptions<AdaloOptions>>()?.Value;
-            if (options == null)
-                return services;
-
+            var options = services.BuildServiceProvider().GetRequiredService<IOptions<AdaloOptions>>().Value;
+            
             foreach (var option in options.Apps)
             {
                 foreach (var tablesType in option.TablesTypes)
@@ -48,7 +46,7 @@ namespace AdaloExtensionPack.Core.Adalo
                 .ConfigureApplicationPartManager(m =>
                     m.FeatureProviders.Add(new AdaloControllerFeatureProvider(options)));
 
-            return services;
+            return new(services);
         }
     }
 }

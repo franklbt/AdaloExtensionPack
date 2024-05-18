@@ -9,19 +9,15 @@ using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.ApiKey
 {
-    public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
+    internal class ApiKeyAuthenticationHandler(
+        IOptionsMonitor<ApiKeyAuthenticationOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder)
+        : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, logger, encoder)
     {
-        private readonly IOptionsMonitor<ApiKeyAuthenticationOptions> _options;
+        private readonly IOptionsMonitor<ApiKeyAuthenticationOptions> _options = options;
         private const string ProblemDetailsContentType = "application/problem+json";
         private const string ApiKeyHeaderName = "X-Api-Key";
-
-        public ApiKeyAuthenticationHandler(
-            IOptionsMonitor<ApiKeyAuthenticationOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder) : base(options, logger, encoder)
-        {
-            _options = options;
-        }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
