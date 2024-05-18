@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using CaseExtensions;
+﻿using CaseExtensions;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;

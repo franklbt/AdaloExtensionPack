@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
-using System.Reflection;
 using SkiaSharp;
 
 namespace AdaloExtensionPack.Core.Fonts

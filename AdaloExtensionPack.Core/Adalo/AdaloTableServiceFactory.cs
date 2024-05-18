@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
