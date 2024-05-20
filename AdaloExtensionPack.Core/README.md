@@ -2,7 +2,7 @@
 
 [![nuget](https://img.shields.io/nuget/v/AdaloExtensionPack.Core)](https://www.nuget.org/packages/AdaloExtensionPack.Core) ![downloads](https://img.shields.io/nuget/dt/AdaloExtensionPack.Core)
 
-Helpers library to connect C# Web app to Adalo tables API
+Helpers library to connect C# Web app to [Adalo](https://adalo.com) tables API
 
 # Usage
 
