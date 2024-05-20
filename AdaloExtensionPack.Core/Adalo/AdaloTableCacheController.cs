@@ -1,35 +1,36 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
-    public class AdaloTableCacheController<T> : Controller where T : AdaloEntity
+    public class AdaloTableCacheController<T> : ODataController where T : AdaloEntity
     {
-        private readonly AdaloTableCacheService<T> _adaloTableCacheService;
+        private readonly IAdaloTableCacheService<T> _adaloTableCacheService;
 
-        public AdaloTableCacheController(AdaloTableCacheService<T> adaloTableCacheService)
+        public AdaloTableCacheController(IAdaloTableCacheService<T> adaloTableCacheService)
         {
             _adaloTableCacheService = adaloTableCacheService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpGet, EnableQuery]
+        public async Task<ActionResult<IEnumerable<T>>> GetAllAsync()
         {
             var result = await _adaloTableCacheService.GetAllAsync();
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody]
-            T payload)
+        public async Task<IActionResult> PostAsync([FromBody] T payload)
         {
             var result = await _adaloTableCacheService.PostAsync(payload);
             return Ok(result);
         }
 
         [HttpGet("{recordId}")]
-        public async Task<IActionResult> GetAsync([FromRoute]
-            int recordId)
+        public async Task<ActionResult<T>> GetAsync([FromRoute] int recordId)
         {
             var result = await _adaloTableCacheService.GetAsync(recordId);
             if (result == null)
@@ -47,9 +48,7 @@ namespace AdaloExtensionPack.Core.Adalo
         }
 
         [HttpPut("{recordId}")]
-        public async Task<IActionResult> PutAsync([FromRoute]
-            int recordId, [FromBody]
-            T payload)
+        public async Task<ActionResult<T>> PutAsync([FromRoute] int recordId, [FromBody] T payload)
         {
             var result = await _adaloTableCacheService.PutAsync(recordId, payload);
             return Ok(result);

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <PackageId>AdaloExtensionPack.Core</PackageId>
-        <Version>0.2.13</Version>
+        <Version>0.2.14</Version>
         <Authors>Frank LIBOLT</Authors>
         <Company>Frank LIBOLT</Company>
         <PackageTags>
@@ -24,6 +24,7 @@
     <ItemGroup>
         <PackageReference Include="CaseExtensions" Version="1.1.0"/>
         <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.5" />
         <PackageReference Include="SkiaSharp" Version="2.88.8"/>
     </ItemGroup>
 

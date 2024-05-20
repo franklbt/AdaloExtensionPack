@@ -7,7 +7,7 @@ public class AdaloServiceCollection(IServiceCollection Services)
 {
     internal IServiceCollection Services { get; init; } = Services;
 
-    public AdaloServiceCollection WithGeneratedControllerApiKey(string apiKey)
+    public AdaloServiceCollection WithTableCacheControllerApiKey(string apiKey)
     {
         Services.AddApiKey(opts => opts.ApiKey = apiKey);
         return this;

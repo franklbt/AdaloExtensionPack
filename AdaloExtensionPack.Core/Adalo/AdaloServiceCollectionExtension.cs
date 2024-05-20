@@ -1,12 +1,21 @@
 ﻿using System;
+using System.Reflection;
+using CaseExtensions;
+using Humanizer;
+using Microsoft.AspNetCore.OData;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.OData.ModelBuilder;
 
 namespace AdaloExtensionPack.Core.Adalo
 {
     public static class AdaloServiceCollectionExtension
     {
-        public static AdaloServiceCollection AddAdalo(this IServiceCollection services, Action<AdaloOptions> optionsFactory)
+        private static readonly MethodInfo EntitySetMethodInfo = typeof(ODataConventionModelBuilder)
+            .GetMethod(nameof(ODataConventionModelBuilder.EntitySet));
+
+        public static AdaloServiceCollection AddAdalo(this IServiceCollection services,
+            Action<AdaloOptions> optionsFactory)
         {
             services.Configure(optionsFactory);
             services.AddHttpClient();
@@ -14,7 +23,8 @@ namespace AdaloExtensionPack.Core.Adalo
             services.AddMemoryCache();
 
             var options = services.BuildServiceProvider().GetRequiredService<IOptions<AdaloOptions>>().Value;
-            
+            var oDataModelBuilder = new ODataConventionModelBuilder();
+
             foreach (var option in options.Apps)
             {
                 foreach (var tablesType in option.TablesTypes)
@@ -23,12 +33,16 @@ namespace AdaloExtensionPack.Core.Adalo
                         typeof(IAdaloTableService<>).MakeGenericType(tablesType.Key),
                         s => s.GetService<IAdaloTableServiceFactory>()
                             ?.Create(tablesType.Key, option, tablesType.Value.TableId));
-                    
+
                     if (tablesType.Value.IsCached)
                     {
                         services.AddScoped(
                             typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Key),
                             typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
+
+                        EntitySetMethodInfo
+                            .MakeGenericMethod(tablesType.Key)
+                            .Invoke(oDataModelBuilder, [tablesType.Key.Name.Pluralize().ToKebabCase()]);
                     }
                 }
 
@@ -42,6 +56,9 @@ namespace AdaloExtensionPack.Core.Adalo
 
             services
                 .AddControllers(o => o.Conventions.Add(new AdaloControllerConvention()))
+                .AddOData(opts => opts
+                    .Select().Filter().OrderBy().Count()
+                    .AddRouteComponents("tables", oDataModelBuilder.GetEdmModel()))
                 .ConfigureApplicationPartManager(m =>
                     m.FeatureProviders.Add(new AdaloControllerFeatureProvider(options)));
 

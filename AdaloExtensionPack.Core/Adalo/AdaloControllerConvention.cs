@@ -15,15 +15,15 @@ namespace AdaloExtensionPack.Core.Adalo
             {
                 case 1:
                 {
-                    var customNameAttribute = controller.ControllerType.GenericTypeArguments[0]; 
+                    var rawTableName = controller.ControllerType.GenericTypeArguments[0]; 
 
-                    var tableName = customNameAttribute.Name.Pluralize().ToKebabCase();
+                    var tableName = rawTableName.Name.Pluralize().ToKebabCase();
                     controller.Selectors.Add(new SelectorModel
                     {
                         AttributeRouteModel =
                             new AttributeRouteModel(new RouteAttribute($"tables/{tableName}")),
                     });
-                    controller.ControllerName = customNameAttribute.Name;
+                    controller.ControllerName = rawTableName.Name;
                     break;
                 }
                 case 3:

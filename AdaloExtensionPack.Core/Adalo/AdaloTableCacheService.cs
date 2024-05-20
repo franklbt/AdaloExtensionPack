@@ -8,14 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Adalo
-{
+{ 
     public class AdaloTableCacheService<T>(
         IMemoryCache memoryCache,
         IAdaloTableService<T> adaloService,
         IOptions<AdaloOptions> options,
         IServiceProvider serviceProvider)
-        : IAdaloTableCacheService<T>
-        where T : AdaloEntity
+        : IAdaloTableCacheService<T> where T : AdaloEntity
     {
         private readonly AdaloOptions _options = options.Value;
 
@@ -73,7 +72,8 @@ namespace AdaloExtensionPack.Core.Adalo
                 {
                     using var scope = serviceProvider.CreateScope();
                     using var cache = scope.ServiceProvider.GetService<IMemoryCache>();
-                    await memoryCache.GetOrCreateAsync(tableId, async _ => await adaloService.GetAllAsync());
+                    cache.Remove(tableId);
+                    await cache.GetOrCreateAsync(tableId, async _ => await adaloService.GetAllAsync());
                 })
                 .Ignore();
         }

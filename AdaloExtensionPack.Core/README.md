@@ -22,27 +22,33 @@ or `IAdaloTableCacheService<SomeEntity>` to add a cache layer between Adalo and 
 
 > Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.Adalo.AdaloEntity`
 
-### Cached table
+### Cached tables Services and Controllers
 
-If the `cached` parameter is set to the `true` value in the call to `AddTable`, a controller with methods to create,
-read, update and delete this type of entities will be generated:
+If the `cached` parameter is set to the `true` value in the call to `AddTable`, a service and a controller with methods to create,
+read, update and delete this type of entity will be generated:
 
 ![cached endpoints](https://i.imgur.com/ZGPUPYQ.png)
 
-These controllers can be used as external collections in Adalo to improve performances of your tables.
+The generated controller can be used as external collection in Adalo to improve performances of your tables.
 
-You can also access theses cached tables from your code with the class `AdaloTableCacheService<SomeEntity>`
+Additionally, the entity list endpoint (GET /tables/some-entities) support OData syntax to select, filter, order and take elements. 
+You can read more on this syntax [here](https://www.odata.org/getting-started/basic-tutorial/#queryData)
+
+You can access theses cached tables from your client code using this service interface: `AdaloTableCacheService<SomeEntity>`
 
 ### Views
 
 Views are filtered and mapped collections available through a controller GET action.
 
-You can create a view by add this line inside the `AddAdalo()` call:
+They are more easily usable from an Adalo perspective compare to filtered Get All cache API endpoint, since they do not require knowledge of OData query syntax.
+
+You can create a view by add this code inside the `AddAdalo()` call:
 
     x.AddApplication("[your Adalo App Id]", "[your API token here]")
         .AddView<SomeContext, SomeEntity, SomeProjection>(
-            serviceProvider => new SomeContext(serviceProvider), //Build a context which be reused in predicate and mapping
-            (ctx, entity) => true, // Predicate
+            // Build a context which be reused in predicate and mapping. This can be a service or a shared state for example.
+            serviceProvider => serviceProvider.GetRequiredService<SomeContext>(), 
+            (ctx, entity) => entity.IsValid, // Predicate example
             (ctx, entity) => new SomeProjection(entity)); // Mapping
 
 This will generate this method:
