@@ -12,6 +12,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <projectUrl>https://www.franklibolt.net/?content=adalo-extension-pack</projectUrl>
         <RepositoryUrl>https://github.com/franklbt/AdaloExtensionPack</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <LangVersion>default</LangVersion>

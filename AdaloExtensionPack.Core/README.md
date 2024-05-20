@@ -8,7 +8,7 @@ Helpers to connect C# Web app to Adalo tables API
 
 ### Tables
 
-In the Startup.cs file, add in the method ConfigureServices() :
+In the Startup.cs file, add in the method `ConfigureServices()` :
  
 ```csharp    
 services.AddAdalo(x =>
@@ -19,8 +19,7 @@ services.AddAdalo(x =>
 });
 ```        
 
-Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect directly to Adalo tables API,
-or `IAdaloTableCacheService<SomeEntity>` to add a cache layer between Adalo and your app.
+Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect directly to Adalo tables API.
 
 > Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.Adalo.AdaloEntity`
 
@@ -35,7 +34,7 @@ The generated controller can be used as an external collection in Adalo in repla
 to improve performance.
 In this case, all the write operations must be done on the table controller to ensure the cache is always up to date.
 
-Additionally, the entity list endpoint (GET /tables/some-entities) supports OData syntax to select, 
+Additionally, the entity list endpoint (`GET /tables/some-entities`) supports OData syntax to select, 
 filter, order and take elements.
 You can read more on this syntax [here](https://www.odata.org/getting-started/basic-tutorial/#queryData). 
 
