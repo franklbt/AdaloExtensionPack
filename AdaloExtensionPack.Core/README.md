@@ -8,7 +8,7 @@ Helpers to connect C# Web app to Adalo tables API
 
 ### Tables
 
-In the Startup.cs file add in the method ConfigureServices() :
+In the Startup.cs file, add in the method ConfigureServices() :
  
 ```csharp    
 services.AddAdalo(x =>
@@ -31,10 +31,12 @@ read, update and delete this type of entity will be generated:
 
 ![cached endpoints](https://i.imgur.com/ZGPUPYQ.png)
 
-The generated controller can be used as external collection in Adalo in replacement of the original table to improve performances.
-In this case all the write operations must be done on the table controller to ensure the cache is always up-to-date.
+The generated controller can be used as an external collection in Adalo in replacement of the original table
+to improve performance.
+In this case, all the write operations must be done on the table controller to ensure the cache is always up to date.
 
-Additionally, the entity list endpoint (GET /tables/some-entities) support OData syntax to select, filter, order and take elements.
+Additionally, the entity list endpoint (GET /tables/some-entities) supports OData syntax to select, 
+filter, order and take elements.
 You can read more on this syntax [here](https://www.odata.org/getting-started/basic-tutorial/#queryData). 
 
 You can access theses cached tables from your client code using this service interface: `IAdaloTableCacheService<SomeEntity>`
@@ -60,11 +62,11 @@ x => x.AddApplication("[your Adalo App Id]", "[your API token here]")
 
 This will generate this method:
 
-![endponts views](https://i.imgur.com/KBTHjBi.png)
+![endpoints views](https://i.imgur.com/KBTHjBi.png)
 
 ### Security
 
-To secure the generated controllers tables and views, it is possible to require an API Key to request these endpoints.
+To secure the generated controller tables and views, it is possible to require an API Key to request these endpoints.
 
 You can do so by adding a call to `WithTableCacheControllerApiKey()` method:
 
