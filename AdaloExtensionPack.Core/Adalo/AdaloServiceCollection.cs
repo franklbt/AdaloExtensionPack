@@ -1,4 +1,5 @@
-﻿using AdaloExtensionPack.Core.ApiKey;
+﻿using System;
+using AdaloExtensionPack.Core.ApiKey;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AdaloExtensionPack.Core.Adalo;
@@ -9,7 +10,12 @@ public class AdaloServiceCollection(IServiceCollection Services)
 
     public AdaloServiceCollection WithTableCacheControllerApiKey(string apiKey)
     {
-        Services.AddApiKey(opts => opts.ApiKey = apiKey);
+        return WithTableCacheControllerApiKey(opts => opts.ApiKey = apiKey);
+    }
+
+    public AdaloServiceCollection WithTableCacheControllerApiKey(Action<ApiKeyAuthenticationOptions> action)
+    {
+        Services.AddApiKey(action);
         return this;
     }
 }

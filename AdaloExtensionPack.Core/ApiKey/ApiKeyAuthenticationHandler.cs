@@ -17,11 +17,10 @@ namespace AdaloExtensionPack.Core.ApiKey
     {
         private readonly IOptionsMonitor<ApiKeyAuthenticationOptions> _options = options;
         private const string ProblemDetailsContentType = "application/problem+json";
-        private const string ApiKeyHeaderName = "X-Api-Key";
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.TryGetValue(ApiKeyHeaderName, out var apiKeyHeaderValues))
+            if (!Request.Headers.TryGetValue(Options.ApiKeyHeaderName, out var apiKeyHeaderValues))
             {
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
@@ -42,7 +41,7 @@ namespace AdaloExtensionPack.Core.ApiKey
                 new(ClaimTypes.Name, "System")
             };
 
-            var identity = new ClaimsIdentity(claims, Options.AuthenticationType);
+            var identity = new ClaimsIdentity(claims, Options.Scheme);
             var identities = new List<ClaimsIdentity> {identity};
             var principal = new ClaimsPrincipal(identities);
             var ticket = new AuthenticationTicket(principal, Options.Scheme);
