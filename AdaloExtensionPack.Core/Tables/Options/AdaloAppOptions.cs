@@ -12,13 +12,14 @@ namespace AdaloExtensionPack.Core.Tables.Options
 
         internal List<AdaloViewOptions> ViewTypes { get; set; } = new();
 
-        public AdaloAppOptions AddTable<T>(string tableId, bool cached = false) where T: AdaloEntity
+        public AdaloAppOptions AddTable<T>(string tableId, bool cached = false, TimeSpan? cacheDuration = null) where T: AdaloEntity
         {
             TablesTypes.Add(typeof(T),
                 new AdaloTableOptions
                 {
                     IsCached = cached,
-                    TableId = tableId
+                    TableId = tableId,
+                    CacheDuration = cacheDuration
                 });
             return this;
         }
