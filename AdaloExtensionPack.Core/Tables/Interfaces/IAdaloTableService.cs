@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AdaloExtensionPack.Core.Tables.Data;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Interfaces
 {
     public interface IAdaloTableService<T> where T : AdaloEntity
     {

@@ -2,7 +2,7 @@
 using AdaloExtensionPack.Core.ApiKey;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AdaloExtensionPack.Core.Adalo;
+namespace AdaloExtensionPack.Core.Tables.Services;
 
 public class AdaloServiceCollection(IServiceCollection Services)
 {

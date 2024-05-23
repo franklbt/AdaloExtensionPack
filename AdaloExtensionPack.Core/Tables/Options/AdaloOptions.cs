@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Options
 {
     public class AdaloOptions
     {

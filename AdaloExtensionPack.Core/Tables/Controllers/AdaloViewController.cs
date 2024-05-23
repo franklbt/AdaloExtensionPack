@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Controllers
 {
     public class AdaloViewController<TContext, TBase, TResult> : Controller where TBase : AdaloEntity
     {

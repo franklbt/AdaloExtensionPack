@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AdaloExtensionPack.Core.Tables.Data;
 
-namespace AdaloExtensionPack.Core.Adalo;
+namespace AdaloExtensionPack.Core.Tables.Interfaces;
 
 public interface IAdaloTableCacheService<T> where T : AdaloEntity
 {

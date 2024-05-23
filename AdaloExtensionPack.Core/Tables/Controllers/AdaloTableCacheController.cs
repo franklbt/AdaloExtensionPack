@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Controllers
 {
     public class AdaloTableCacheController<T> : ODataController where T : AdaloEntity
     {

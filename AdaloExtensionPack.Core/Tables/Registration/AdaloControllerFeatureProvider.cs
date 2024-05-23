@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AdaloExtensionPack.Core.Tables.Controllers;
+using AdaloExtensionPack.Core.Tables.Options;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Registration
 {
     public class AdaloControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
     {

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AdaloExtensionPack.Core.Helpers;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Interfaces;
+using AdaloExtensionPack.Core.Tables.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Services
 { 
     public class AdaloTableCacheService<T>(
         IMemoryCache memoryCache,

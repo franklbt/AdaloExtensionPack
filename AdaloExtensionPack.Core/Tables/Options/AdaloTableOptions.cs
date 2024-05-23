@@ -1,4 +1,4 @@
-﻿namespace AdaloExtensionPack.Core.Adalo
+﻿namespace AdaloExtensionPack.Core.Tables.Options
 {
     public class AdaloTableOptions
     {

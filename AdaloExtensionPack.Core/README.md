@@ -21,7 +21,7 @@ services.AddAdalo(x =>
 
 Then inject `IAdaloTableService<SomeEntity>` in your controller/services to connect directly to Adalo tables API.
 
-> Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.Adalo.AdaloEntity`
+> Note: SomeEntity need to inherit from `AdaloExtensionPack.Core.Tables.Data.AdaloEntity`
 
 ### Cached tables
 

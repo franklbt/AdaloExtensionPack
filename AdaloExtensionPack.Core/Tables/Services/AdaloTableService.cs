@@ -9,9 +9,11 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Services
 {
     public class AdaloTableService<T> : IAdaloTableService<T> where T : AdaloEntity
     {

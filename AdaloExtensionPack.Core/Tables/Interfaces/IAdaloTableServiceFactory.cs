@@ -1,6 +1,8 @@
 ﻿using System;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Options;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Interfaces
 {
     public interface IAdaloTableServiceFactory
     {

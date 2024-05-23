@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using AdaloExtensionPack.Core.Tables.Interfaces;
+using AdaloExtensionPack.Core.Tables.Options;
+using AdaloExtensionPack.Core.Tables.Registration;
 using CaseExtensions;
 using Humanizer;
 using Microsoft.AspNetCore.OData;
@@ -7,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OData.ModelBuilder;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Services
 {
     public static class AdaloServiceCollectionExtension
     {

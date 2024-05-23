@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Net.Http;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Interfaces;
+using AdaloExtensionPack.Core.Tables.Options;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Services
 {
     public class AdaloTableServiceFactory : IAdaloTableServiceFactory
     {

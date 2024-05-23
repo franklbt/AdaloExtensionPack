@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdaloExtensionPack.Core.Tables.Data;
+using AdaloExtensionPack.Core.Tables.Interfaces;
+using AdaloExtensionPack.Core.Tables.Options;
 using Microsoft.Extensions.Options;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Services
 {
     public class AdaloViewService<TContext, TBase, TResult> : IAdaloViewService<TContext, TBase, TResult> where TBase : AdaloEntity
     {

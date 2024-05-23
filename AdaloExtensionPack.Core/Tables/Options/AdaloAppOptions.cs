@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdaloExtensionPack.Core.Tables.Data;
 
-namespace AdaloExtensionPack.Core.Adalo
+namespace AdaloExtensionPack.Core.Tables.Options
 {
     public class AdaloAppOptions
     {
