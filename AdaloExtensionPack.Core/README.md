@@ -4,9 +4,7 @@
 
 Helpers library to connect C# Web app to [Adalo](https://adalo.com) tables API
 
-# Usage
-
-### Tables
+# Tables
 
 In the Startup.cs file, add in the method `ConfigureServices()` :
  
