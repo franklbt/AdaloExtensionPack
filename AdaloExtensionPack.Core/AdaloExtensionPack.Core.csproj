@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <PackageId>AdaloExtensionPack.Core</PackageId>
-        <Version>0.2.15</Version>
+        <Version>0.2.16</Version>
         <Authors>Frank LIBOLT</Authors>
         <Company>Frank LIBOLT</Company>
         <PackageTags>
