@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Tables.Services
-{ 
+{
     public class AdaloTableCacheService<T>(
         IMemoryCache memoryCache,
         IAdaloTableService<T> adaloService,
@@ -41,7 +41,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
             var tableTypes = GetAllTableTypes();
             var tableOptions = tableTypes[typeof(T)];
             var result = await adaloService.PostAsync(payload);
-
+            RefreshRecord(tableOptions, result.Id, result).Ignore();
             UpdateTableCache(tableOptions, list => list.Append(result).ToList());
 
             return result;
@@ -52,38 +52,64 @@ namespace AdaloExtensionPack.Core.Tables.Services
         {
             var tableTypes = GetAllTableTypes();
             var tableOptions = tableTypes[typeof(T)];
-            var exists = memoryCache.TryGetValue<List<T>>(tableOptions, out var table);
+            var exists = memoryCache.TryGetValue<T>($"{tableOptions.TableId}-{recordId}", out var record);
 
-            if (!exists || table is null)
+            if (exists && record is not null)
             {
-                RefreshTableCache(tableOptions);
-                return await adaloService.GetAsync(recordId);
+                return record;
             }
 
-            var result = table.FirstOrDefault(x => x.Id == recordId);
+            exists = memoryCache.TryGetValue<List<T>>(tableOptions.TableId, out var table);
+            if (exists && table is { Count: > 0 })
+            {
+                return table.FirstOrDefault(x => x.Id == recordId);
+            }
 
-            return result;
+            RefreshTableCache(tableOptions);
+            return await RefreshRecord(tableOptions, recordId);
         }
 
-        private void RefreshTableCache(AdaloTableOptions table)
-        {
-            ArgumentNullException.ThrowIfNull(table);
-            Task.Run(async () => await RefreshTableCacheAsync(table)).Ignore();
-        }
-
-        private async Task<List<T>> RefreshTableCacheAsync(AdaloTableOptions table)
+        private async Task<T> RefreshRecord(AdaloTableOptions table, int recordId, T record = null)
         {
             using var scope = serviceProvider.CreateScope();
-            using var cache = scope.ServiceProvider.GetService<IMemoryCache>();
-            cache.Remove(table.TableId);
+            var cache = scope.ServiceProvider.GetService<IMemoryCache>();
             return await cache.GetOrCreateAsync(table.TableId, async entry =>
             {
+                var result = record ?? await adaloService.GetAsync(recordId);
                 if (table.IsCached && table.CacheDuration != null)
                 {
-                    entry.AbsoluteExpirationRelativeToNow = table.CacheDuration.Value;
+                    entry.SetAbsoluteExpiration(table.CacheDuration.Value);
                 }
-                return await adaloService.GetAllAsync();
+
+                return result;
             });
+        }
+
+        private void RefreshTableCache(AdaloTableOptions table, bool force = false)
+        {
+            ArgumentNullException.ThrowIfNull(table);
+            RefreshTableCacheAsync(table, true).Ignore();
+        }
+
+        private async Task<List<T>> RefreshTableCacheAsync(AdaloTableOptions table, bool force = false)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var cache = scope.ServiceProvider.GetService<IMemoryCache>();
+            if (force)
+            {
+                cache.Remove(table.TableId);
+            }
+            
+            return await cache.GetOrCreateAsync(table.TableId, async entry =>
+            {
+                var result = await adaloService.GetAllAsync();
+                if (table.IsCached && table.CacheDuration != null)
+                {
+                    entry.SetAbsoluteExpiration(table.CacheDuration.Value);
+                }
+
+                return result;
+            }) ?? [];
         }
 
         public async Task DeleteAsync(
@@ -92,6 +118,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
             var tableTypes = GetAllTableTypes();
             var tableOptions = tableTypes[typeof(T)];
             await adaloService.DeleteAsync(recordId);
+            RefreshRecord(tableOptions, recordId).Ignore();
             UpdateTableCache(tableOptions, list => list.Where(x => x.Id != recordId).ToList());
         }
 
@@ -111,7 +138,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
             }
             else
             {
-                RefreshTableCache(table);
+                RefreshTableCache(table, true);
             }
         }
 
@@ -122,6 +149,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
             var tableTypes = GetAllTableTypes();
             var tableOptions = tableTypes[typeof(T)];
             var result = await adaloService.PutAsync(recordId, payload);
+            RefreshRecord(tableOptions, recordId, result).Ignore();
             UpdateTableCache(tableOptions, list => list.Where(x => x.Id != recordId).Append(result).ToList());
             return result;
         }

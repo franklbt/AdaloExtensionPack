@@ -21,7 +21,7 @@ namespace AdaloExtensionPack.Core.Tables.Registration
         {
             var tables = _options.Apps
                 .SelectMany(x => x.TablesTypes)
-                .Where(x => x.Value.IsCached)
+                .Where(x => x.Value.IsCached && x.Value.GenerateCacheControllers)
                 .Select(x => x.Key)
                 .ToList();
 

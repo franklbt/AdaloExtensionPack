@@ -7,5 +7,6 @@ namespace AdaloExtensionPack.Core.Tables.Options
         public bool IsCached { get; set; }
         public TimeSpan? CacheDuration { get; set; }
         public string TableId { get; set; }
+        public bool GenerateCacheControllers { get; set; }
     }
 }
