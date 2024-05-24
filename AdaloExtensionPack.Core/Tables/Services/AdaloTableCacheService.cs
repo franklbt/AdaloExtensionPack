@@ -73,7 +73,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
         {
             using var scope = serviceProvider.CreateScope();
             var cache = scope.ServiceProvider.GetService<IMemoryCache>();
-            return await cache.GetOrCreateAsync(table.TableId, async entry =>
+            return await cache.GetOrCreateAsync($"{table.TableId}-{recordId}", async entry =>
             {
                 var result = record ?? await adaloService.GetAsync(recordId);
                 if (table.IsCached && table.CacheDuration != null)
