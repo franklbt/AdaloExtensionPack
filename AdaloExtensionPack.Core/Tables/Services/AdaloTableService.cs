@@ -33,27 +33,12 @@ namespace AdaloExtensionPack.Core.Tables.Services
         /// <summary>
         /// Get all records for a table
         /// </summary>
-        /// <param name="predicate">A filter on one field sent to the server. Must be a simple field (text, number, bool, date & time - not array)</param>
+        /// <param name="predicate">A filter on one field sent to the server. Must be a top-level simple field (text, number, bool, date & time - not array)</param>
         /// <returns>A list of records</returns>
         public async Task<List<T>> GetAllAsync(
             (Expression<Func<T, object>> Predicate, object Value)? predicate = null)
         {
-            var url = GetUrl();
-            var filter = predicate is { Predicate.Body: MemberExpression m }
-                ? (Name: GetMemberName(m), predicate.Value.Value)
-                : default;
-
-            if (filter != default)
-            {
-                var param = new Dictionary<string, string>
-                {
-                    ["filterKey"] = filter.Name,
-                    ["filterValue"] = filter.Value.ToString()
-                };
-
-                url = QueryHelpers.AddQueryString(url, param);
-            }
-
+            var url = GetTableUrl(_appId, _tableId);
             var response = await _client.GetAsync(url);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<GetAllResponse>();
@@ -74,7 +59,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
         /// <returns>The added entity</returns>
         public async Task<T> PostAsync(T payload)
         {
-            var url = GetUrl();
+            var url = GetTableUrl(_appId, _tableId);
             var response = await _client.PostAsJsonAsync(url, payload);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<T>();
@@ -87,7 +72,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
         /// <returns>The record to get, or null if not found</returns>
         public async Task<T> GetAsync(int recordId)
         {
-            var url = GetUrl(recordId);
+            var url = GetTableUrl(_appId, _tableId, recordId);
             var response = await _client.GetAsync(url);
             try
             {
@@ -107,7 +92,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
         /// <param name="recordId">Id of the deleted record</param>
         public async Task DeleteAsync(int recordId)
         {
-            var url = GetUrl(recordId);
+            var url = GetTableUrl(_appId, _tableId, recordId);
             var response = await _client.DeleteAsync(url);
             response.EnsureSuccessStatusCode();
         }
@@ -120,11 +105,11 @@ namespace AdaloExtensionPack.Core.Tables.Services
         /// <returns>The updated record</returns>
         public async Task<T> PutAsync(int recordId, T payload)
         {
-            var url = GetUrl(recordId);
+            var url = GetTableUrl(_appId, _tableId, recordId);
             var response = await _client.PutAsJsonAsync(url, payload, new JsonSerializerOptions
             {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            }); 
+            });
             response.EnsureSuccessStatusCode();
             return payload;
         }
@@ -154,10 +139,29 @@ namespace AdaloExtensionPack.Core.Tables.Services
             return client;
         }
 
-        private string GetUrl(int? recordId = null)
+
+        public static string GetTableUrl(Guid appId, string tableId, int? recordId = null,
+            (Expression<Func<T, object>> Predicate, object Value)? predicate = null)
         {
-            return
-                $"https://api.adalo.com/v0/apps/{_appId}/collections/{_tableId}{(recordId != null ? "/" + recordId : "")}";
+            var url =
+                $"https://api.adalo.com/v0/apps/{appId}/collections/{tableId}{(recordId != null ? "/" + recordId : "")}";
+
+            var filter = predicate is { Predicate.Body: MemberExpression m }
+                ? (Name: GetMemberName(m), predicate.Value.Value)
+                : default;
+
+            if (filter != default)
+            {
+                var param = new Dictionary<string, string>
+                {
+                    ["filterKey"] = filter.Name,
+                    ["filterValue"] = filter.Value.ToString()
+                };
+
+                url = QueryHelpers.AddQueryString(url, param);
+            }
+
+            return url;
         }
 
         private class GetAllResponse
