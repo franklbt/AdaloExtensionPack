@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdaloExtensionPack.Core.Tables.Options
 {
@@ -9,11 +10,13 @@ namespace AdaloExtensionPack.Core.Tables.Options
 
         public AdaloAppOptions AddApplication(Guid appId, string token)
         {
-            var opts = new AdaloAppOptions
+            var opts = Apps
+                .FirstOrDefault(x => x.AppId == appId, new AdaloAppOptions
             {
                 AppId = appId,
                 Token = token
-            };
+            });
+            Apps.Remove(opts);
             Apps.Add(opts);
             return opts;
         }
