@@ -5,19 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdaloExtensionPack.Core.Tables.Controllers
 {
-    public class AdaloViewController<TContext, TBase, TResult> : Controller where TBase : AdaloEntity
+    public class AdaloViewController<TContext, TBase, TResult>(
+        IAdaloViewService<TContext, TBase, TResult> adaloViewService)
+        : Controller
+        where TBase : AdaloEntity
     {
-        private readonly IAdaloViewService<TContext, TBase, TResult> _adaloViewService;
-
-        public AdaloViewController(IAdaloViewService<TContext, TBase, TResult> adaloViewService)
-        {
-            _adaloViewService = adaloViewService;
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _adaloViewService.GetAllAsync();
+            var result = await adaloViewService.GetAllAsync();
             return Ok(result);
         }
     }

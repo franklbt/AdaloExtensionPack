@@ -5,14 +5,9 @@ using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Smtp
 {
-    public class SmtpService : ISmtpService
+    public class SmtpService(IOptions<SmtpOptions> configuration) : ISmtpService
     {
-        private readonly SmtpOptions _configuration;
-
-        public SmtpService(IOptions<SmtpOptions> configuration)
-        {
-            _configuration = configuration.Value;
-        }
+        private readonly SmtpOptions _configuration = configuration.Value;
 
         public async Task SendEmail(string body, string subject, string to)
         {

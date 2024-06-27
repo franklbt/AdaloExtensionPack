@@ -8,33 +8,27 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace AdaloExtensionPack.Core.Tables.Controllers
 {
-    public class AdaloTableCacheController<T> : ODataController where T : AdaloEntity
+    public class AdaloTableCacheController<T>(IAdaloTableCacheService<T> adaloTableCacheService) : ODataController
+        where T : AdaloEntity
     {
-        private readonly IAdaloTableCacheService<T> _adaloTableCacheService;
-
-        public AdaloTableCacheController(IAdaloTableCacheService<T> adaloTableCacheService)
-        {
-            _adaloTableCacheService = adaloTableCacheService;
-        }
-
         [HttpGet, EnableQuery]
         public async Task<ActionResult<IEnumerable<T>>> GetAllAsync()
         {
-            var result = await _adaloTableCacheService.GetAllAsync();
+            var result = await adaloTableCacheService.GetAllAsync();
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] T payload)
         {
-            var result = await _adaloTableCacheService.PostAsync(payload);
+            var result = await adaloTableCacheService.PostAsync(payload);
             return Ok(result);
         }
 
         [HttpGet("{recordId}")]
         public async Task<ActionResult<T>> GetAsync([FromRoute] int recordId)
         {
-            var result = await _adaloTableCacheService.GetAsync(recordId);
+            var result = await adaloTableCacheService.GetAsync(recordId);
             if (result == null)
                 return NotFound();
 
@@ -45,14 +39,14 @@ namespace AdaloExtensionPack.Core.Tables.Controllers
         public async Task<IActionResult> DeleteAsync(
             int recordId)
         {
-            await _adaloTableCacheService.DeleteAsync(recordId);
+            await adaloTableCacheService.DeleteAsync(recordId);
             return Ok();
         }
 
         [HttpPut("{recordId}")]
         public async Task<ActionResult<T>> PutAsync([FromRoute] int recordId, [FromBody] T payload)
         {
-            var result = await _adaloTableCacheService.PutAsync(recordId, payload);
+            var result = await adaloTableCacheService.PutAsync(recordId, payload);
             return Ok(result);
         }
     }
