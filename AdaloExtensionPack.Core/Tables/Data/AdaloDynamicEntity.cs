@@ -14,18 +14,21 @@ public class AdaloDynamicEntity : Dictionary<string, object>, IAdaloEntity
     {
     }
 
+    [JsonIgnore]
     public int Id
     {
         get => this["id"] as int? ?? 0;
         set => this["id"] = value;
     }
 
+    [JsonIgnore]
     public DateTimeOffset CreatedAt
     {
         get => this["created_at"] as DateTimeOffset? ?? DateTimeOffset.MinValue;
         init => this["created_at"] = value;
     }
 
+    [JsonIgnore]
     public DateTimeOffset UpdatedAt
     {
         get => this["updated_at"] as DateTimeOffset? ?? DateTimeOffset.MinValue;
