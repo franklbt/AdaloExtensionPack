@@ -6,7 +6,7 @@ using AdaloExtensionPack.Core.Tables.Data;
 
 namespace AdaloExtensionPack.Core.Tables.Interfaces
 {
-    public interface IAdaloTableService<T> where T : AdaloEntity
+    public interface IAdaloTableService<T> where T : IAdaloEntity
     {
         string TableId { get; }
         Task<List<T>> GetAllAsync((Expression<Func<T, object>> Predicate, object Value)? predicate = null);

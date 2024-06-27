@@ -8,34 +8,27 @@ using AdaloExtensionPack.Core.Tables.Interfaces;
 using AdaloExtensionPack.Core.Tables.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Tables.Services
 {
     public class AdaloTableCacheService<T>(
         IMemoryCache memoryCache,
         IAdaloTableService<T> adaloService,
-        IOptions<AdaloOptions> options,
+        AdaloTableOptions tableOptions,
         IServiceProvider serviceProvider)
-        : IAdaloTableCacheService<T> where T : AdaloEntity
-    { 
-        private readonly AdaloTableOptions _tableOptions = options.Value.Apps
-            .SelectMany(x => x.Tables.Select(y => y.Value))
-            .Where(x => x.Options.TableId == adaloService.TableId)
-            .Select(x => x.Options)
-            .First();
-
+        : IAdaloTableCacheService<T> where T : IAdaloEntity
+    {  
         public async Task<List<T>> GetAllAsync()
         {  
-            return await RefreshTableCacheAsync(_tableOptions);
+            return await RefreshTableCacheAsync(tableOptions);
         }
  
         public async Task<T> PostAsync(
             T payload)
         {  
             var result = await adaloService.PostAsync(payload);
-            RefreshRecord(_tableOptions, result.Id, result).Ignore();
-            UpdateTableCache(_tableOptions, list => list.Append(result).ToList());
+            RefreshRecord(tableOptions, result.Id, result).Ignore();
+            UpdateTableCache(tableOptions, list => list.Append(result).ToList());
 
             return result;
         }
@@ -43,24 +36,24 @@ namespace AdaloExtensionPack.Core.Tables.Services
         public async Task<T> GetAsync(
             int recordId)
         {  
-            var exists = memoryCache.TryGetValue<T>($"{_tableOptions.TableId}-{recordId}", out var record);
+            var exists = memoryCache.TryGetValue<T>($"{tableOptions.TableId}-{recordId}", out var record);
 
             if (exists && record is not null)
             {
                 return record;
             }
 
-            exists = memoryCache.TryGetValue<List<T>>(_tableOptions.TableId, out var table);
+            exists = memoryCache.TryGetValue<List<T>>(tableOptions.TableId, out var table);
             if (exists && table is { Count: > 0 })
             {
                 return table.FirstOrDefault(x => x.Id == recordId);
             }
 
-            RefreshTableCache(_tableOptions);
-            return await RefreshRecord(_tableOptions, recordId);
+            RefreshTableCache(tableOptions);
+            return await RefreshRecord(tableOptions, recordId);
         }
 
-        private async Task<T> RefreshRecord(AdaloTableOptions table, int recordId, T record = null)
+        private async Task<T> RefreshRecord(AdaloTableOptions table, int recordId, T record = default)
         {
             using var scope = serviceProvider.CreateScope();
             var cache = scope.ServiceProvider.GetService<IMemoryCache>();
@@ -107,8 +100,8 @@ namespace AdaloExtensionPack.Core.Tables.Services
             int recordId)
         { 
             await adaloService.DeleteAsync(recordId);
-            RefreshRecord(_tableOptions, recordId).Ignore();
-            UpdateTableCache(_tableOptions, list => list.Where(x => x.Id != recordId).ToList());
+            RefreshRecord(tableOptions, recordId).Ignore();
+            UpdateTableCache(tableOptions, list => list.Where(x => x.Id != recordId).ToList());
         }
 
         private void UpdateTableCache(AdaloTableOptions table, Func<List<T>, List<T>> update)
@@ -136,8 +129,8 @@ namespace AdaloExtensionPack.Core.Tables.Services
             T payload)
         { 
             var result = await adaloService.PutAsync(recordId, payload);
-            RefreshRecord(_tableOptions, recordId, result).Ignore();
-            UpdateTableCache(_tableOptions, list => list.Where(x => x.Id != recordId).Append(result).ToList());
+            RefreshRecord(tableOptions, recordId, result).Ignore();
+            UpdateTableCache(tableOptions, list => list.Where(x => x.Id != recordId).Append(result).ToList());
             return result;
         }
     }

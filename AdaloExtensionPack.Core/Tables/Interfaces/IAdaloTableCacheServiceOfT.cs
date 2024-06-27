@@ -4,7 +4,7 @@ using AdaloExtensionPack.Core.Tables.Data;
 
 namespace AdaloExtensionPack.Core.Tables.Interfaces;
 
-public interface IAdaloTableCacheService<T> where T : AdaloEntity
+public interface IAdaloTableCacheService<T> where T : IAdaloEntity
 {
     Task<List<T>> GetAllAsync();
 

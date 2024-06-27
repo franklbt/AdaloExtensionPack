@@ -9,16 +9,13 @@ using Microsoft.Extensions.Options;
 
 namespace AdaloExtensionPack.Core.Tables.Services
 {
-    public class AdaloViewService<TContext, TBase, TResult> : IAdaloViewService<TContext, TBase, TResult> where TBase : AdaloEntity
+    public class AdaloViewService<TContext, TBase, TResult>(
+        IOptions<AdaloOptions> options,
+        IServiceProvider serviceProvider)
+        : IAdaloViewService<TContext, TBase, TResult>
+        where TBase : AdaloEntity
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly AdaloOptions _options;
-
-        public AdaloViewService(IOptions<AdaloOptions> options, IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            _options = options.Value;
-        }
+        private readonly AdaloOptions _options = options.Value;
 
         public async Task<List<TResult>> GetAllAsync()
         {
@@ -34,10 +31,10 @@ namespace AdaloExtensionPack.Core.Tables.Services
             if (view == null)
                 return new List<TResult>();
 
-            var context = view.Context(_serviceProvider);
+            var context = view.Context(serviceProvider);
             
-            var service = _serviceProvider.GetService(typeof(AdaloTableCacheService<TBase>)) 
-                          ?? _serviceProvider.GetService(typeof(IAdaloTableService<TBase>));
+            var service = serviceProvider.GetService(typeof(AdaloTableCacheService<TBase>)) 
+                          ?? serviceProvider.GetService(typeof(IAdaloTableService<TBase>));
 
             switch (service)
             {

@@ -41,7 +41,8 @@ namespace AdaloExtensionPack.Core.Tables.Services
                     {
                         services.AddScoped(
                             typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type),
-                            typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type));
+                            s => s.GetService<IAdaloTableServiceFactory>()
+                                ?.CreateCache(tablesType.Value.Type, tablesType.Value.Options));
 
                         EntitySetMethodInfo
                             .MakeGenericMethod(tablesType.Value.Type)
