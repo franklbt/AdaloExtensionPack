@@ -8,21 +8,22 @@ namespace AdaloExtensionPack.Core.Tables.Options
     {
         internal Guid AppId { get; set; }
         internal string Token { get; set; }
-        internal Dictionary<Type, AdaloTableOptions> TablesTypes { get; set; } = new();
+        internal Dictionary<string, (Type Type, AdaloTableOptions Options)> Tables { get; set; } = new();
 
         internal List<AdaloViewOptions> ViewTypes { get; set; } = new();
 
         public AdaloAppOptions AddTable<T>(string tableId, bool cached = false, TimeSpan? cacheDuration = null, 
             bool generateCacheControllers = true) where T: AdaloEntity
         {
-            TablesTypes.Add(typeof(T),
+            Tables.Add(tableId, (typeof(T),
                 new AdaloTableOptions
                 {
+                    AppOptions = this,
                     IsCached = cached,
                     TableId = tableId,
                     CacheDuration = cacheDuration,
                     GenerateCacheControllers = generateCacheControllers
-                });
+                }));
             return this;
         }
 

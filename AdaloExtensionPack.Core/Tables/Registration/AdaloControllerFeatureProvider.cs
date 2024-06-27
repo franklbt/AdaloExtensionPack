@@ -8,21 +8,14 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace AdaloExtensionPack.Core.Tables.Registration
 {
-    public class AdaloControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
+    public class AdaloControllerFeatureProvider(AdaloOptions options) : IApplicationFeatureProvider<ControllerFeature>
     {
-        private readonly AdaloOptions _options;
-
-        public AdaloControllerFeatureProvider(AdaloOptions options)
-        {
-            _options = options;
-        }
-
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
-            var tables = _options.Apps
-                .SelectMany(x => x.TablesTypes)
-                .Where(x => x.Value.IsCached && x.Value.GenerateCacheControllers)
-                .Select(x => x.Key)
+            var tables = options.Apps
+                .SelectMany(x => x.Tables)
+                .Where(x => x.Value.Options.IsCached && x.Value.Options.GenerateCacheControllers)
+                .Select(x => x.Value.Type)
                 .ToList();
 
             foreach (var candidate in tables)
@@ -32,7 +25,7 @@ namespace AdaloExtensionPack.Core.Tables.Registration
                 );
             }
 
-            var views = _options.Apps
+            var views = options.Apps
                 .SelectMany(x => x.ViewTypes)
                 .ToList();
 

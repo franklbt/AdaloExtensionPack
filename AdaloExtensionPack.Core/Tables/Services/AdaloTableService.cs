@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AdaloExtensionPack.Core.Tables.Data;
 using AdaloExtensionPack.Core.Tables.Interfaces;
+using AdaloExtensionPack.Core.Tables.Options;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace AdaloExtensionPack.Core.Tables.Services
@@ -22,12 +23,13 @@ namespace AdaloExtensionPack.Core.Tables.Services
         private readonly string _tableId;
         private readonly HttpClient _client;
 
-        public AdaloTableService(IHttpClientFactory httpClientFactory, Guid appId, string token, string tableId)
+        public string TableId => _tableId;
+        public AdaloTableService(IHttpClientFactory httpClientFactory, AdaloTableOptions options)
         {
             _httpClientFactory = httpClientFactory;
-            _appId = appId;
-            _tableId = tableId;
-            _client = GetHttpClient(token);
+            _appId = options.AppOptions.AppId;
+            _tableId = options.TableId;
+            _client = GetHttpClient(options.AppOptions.Token);
         }
 
         /// <summary>

@@ -30,22 +30,22 @@ namespace AdaloExtensionPack.Core.Tables.Services
 
             foreach (var option in options.Apps)
             {
-                foreach (var tablesType in option.TablesTypes)
+                foreach (var tablesType in option.Tables)
                 {
                     services.AddScoped(
-                        typeof(IAdaloTableService<>).MakeGenericType(tablesType.Key),
+                        typeof(IAdaloTableService<>).MakeGenericType(tablesType.Value.Type),
                         s => s.GetService<IAdaloTableServiceFactory>()
-                            ?.Create(tablesType.Key, option, tablesType.Value.TableId));
+                            ?.Create(tablesType.Value.Type, tablesType.Value.Options));
 
-                    if (tablesType.Value.IsCached)
+                    if (tablesType.Value.Options.IsCached)
                     {
                         services.AddScoped(
-                            typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Key),
-                            typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Key));
+                            typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type),
+                            typeof(AdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type));
 
                         EntitySetMethodInfo
-                            .MakeGenericMethod(tablesType.Key)
-                            .Invoke(oDataModelBuilder, [tablesType.Key.Name.Pluralize().ToKebabCase()]);
+                            .MakeGenericMethod(tablesType.Value.Type)
+                            .Invoke(oDataModelBuilder, [tablesType.Value.Type.Name.Pluralize().ToKebabCase()]);
                     }
                 }
 

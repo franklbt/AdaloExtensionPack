@@ -8,15 +8,14 @@ namespace AdaloExtensionPack.Core.Tables.Services
 {
     public class AdaloTableServiceFactory(IHttpClientFactory httpClientFactory) : IAdaloTableServiceFactory
     {
-        public IAdaloTableService<T> Create<T>(AdaloAppOptions options, string tableId) where T: AdaloEntity
+        public IAdaloTableService<T> Create<T>(AdaloTableOptions options) where T: AdaloEntity
         {
-            return new AdaloTableService<T>(httpClientFactory, options.AppId, options.Token, tableId);
+            return new AdaloTableService<T>(httpClientFactory, options);
         }
 
-        public object Create(Type type, AdaloAppOptions options, string tableId)
+        public object Create(Type type, AdaloTableOptions options)
         {
-            return Activator.CreateInstance(typeof(AdaloTableService<>).MakeGenericType(type),
-                new object[] {httpClientFactory, options.AppId, options.Token, tableId});
+            return Activator.CreateInstance(typeof(AdaloTableService<>).MakeGenericType(type), [httpClientFactory, options]);
         }
     }
 }

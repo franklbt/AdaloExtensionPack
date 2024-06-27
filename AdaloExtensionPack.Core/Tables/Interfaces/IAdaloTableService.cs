@@ -8,6 +8,7 @@ namespace AdaloExtensionPack.Core.Tables.Interfaces
 {
     public interface IAdaloTableService<T> where T : AdaloEntity
     {
+        string TableId { get; }
         Task<List<T>> GetAllAsync((Expression<Func<T, object>> Predicate, object Value)? predicate = null);
         Task<T> PostAsync(T payload);
         Task<T> GetAsync(int recordId);

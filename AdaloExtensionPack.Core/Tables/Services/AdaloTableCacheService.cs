@@ -18,55 +18,46 @@ namespace AdaloExtensionPack.Core.Tables.Services
         IOptions<AdaloOptions> options,
         IServiceProvider serviceProvider)
         : IAdaloTableCacheService<T> where T : AdaloEntity
-    {
-        private readonly AdaloOptions _options = options.Value;
+    { 
+        private readonly AdaloTableOptions _tableOptions = options.Value.Apps
+            .SelectMany(x => x.Tables.Select(y => y.Value))
+            .Where(x => x.Options.TableId == adaloService.TableId)
+            .Select(x => x.Options)
+            .First();
 
         public async Task<List<T>> GetAllAsync()
-        {
-            var tableTypes = GetAllTableTypes();
-            var table = tableTypes[typeof(T)];
-            return await RefreshTableCacheAsync(table);
+        {  
+            return await RefreshTableCacheAsync(_tableOptions);
         }
-
-        private Dictionary<Type, AdaloTableOptions> GetAllTableTypes()
-        {
-            return _options.Apps
-                .SelectMany(x => x.TablesTypes)
-                .ToDictionary(x => x.Key, x => x.Value);
-        }
-
+ 
         public async Task<T> PostAsync(
             T payload)
-        {
-            var tableTypes = GetAllTableTypes();
-            var tableOptions = tableTypes[typeof(T)];
+        {  
             var result = await adaloService.PostAsync(payload);
-            RefreshRecord(tableOptions, result.Id, result).Ignore();
-            UpdateTableCache(tableOptions, list => list.Append(result).ToList());
+            RefreshRecord(_tableOptions, result.Id, result).Ignore();
+            UpdateTableCache(_tableOptions, list => list.Append(result).ToList());
 
             return result;
         }
 
         public async Task<T> GetAsync(
             int recordId)
-        {
-            var tableTypes = GetAllTableTypes();
-            var tableOptions = tableTypes[typeof(T)];
-            var exists = memoryCache.TryGetValue<T>($"{tableOptions.TableId}-{recordId}", out var record);
+        {  
+            var exists = memoryCache.TryGetValue<T>($"{_tableOptions.TableId}-{recordId}", out var record);
 
             if (exists && record is not null)
             {
                 return record;
             }
 
-            exists = memoryCache.TryGetValue<List<T>>(tableOptions.TableId, out var table);
+            exists = memoryCache.TryGetValue<List<T>>(_tableOptions.TableId, out var table);
             if (exists && table is { Count: > 0 })
             {
                 return table.FirstOrDefault(x => x.Id == recordId);
             }
 
-            RefreshTableCache(tableOptions);
-            return await RefreshRecord(tableOptions, recordId);
+            RefreshTableCache(_tableOptions);
+            return await RefreshRecord(_tableOptions, recordId);
         }
 
         private async Task<T> RefreshRecord(AdaloTableOptions table, int recordId, T record = null)
@@ -114,12 +105,10 @@ namespace AdaloExtensionPack.Core.Tables.Services
 
         public async Task DeleteAsync(
             int recordId)
-        {
-            var tableTypes = GetAllTableTypes();
-            var tableOptions = tableTypes[typeof(T)];
+        { 
             await adaloService.DeleteAsync(recordId);
-            RefreshRecord(tableOptions, recordId).Ignore();
-            UpdateTableCache(tableOptions, list => list.Where(x => x.Id != recordId).ToList());
+            RefreshRecord(_tableOptions, recordId).Ignore();
+            UpdateTableCache(_tableOptions, list => list.Where(x => x.Id != recordId).ToList());
         }
 
         private void UpdateTableCache(AdaloTableOptions table, Func<List<T>, List<T>> update)
@@ -145,12 +134,10 @@ namespace AdaloExtensionPack.Core.Tables.Services
         public async Task<T> PutAsync(
             int recordId,
             T payload)
-        {
-            var tableTypes = GetAllTableTypes();
-            var tableOptions = tableTypes[typeof(T)];
+        { 
             var result = await adaloService.PutAsync(recordId, payload);
-            RefreshRecord(tableOptions, recordId, result).Ignore();
-            UpdateTableCache(tableOptions, list => list.Where(x => x.Id != recordId).Append(result).ToList());
+            RefreshRecord(_tableOptions, recordId, result).Ignore();
+            UpdateTableCache(_tableOptions, list => list.Where(x => x.Id != recordId).Append(result).ToList());
             return result;
         }
     }
