@@ -23,6 +23,7 @@ namespace AdaloExtensionPack.Core.Tables.Services
             services.Configure(optionsFactory);
             services.AddHttpClient();
             services.AddScoped<IAdaloTableServiceFactory, AdaloTableServiceFactory>();
+            services.AddScoped<IAdaloTableCacheServiceFactory, AdaloTableCacheServiceFactory>();
             services.AddMemoryCache();
 
             var options = services.BuildServiceProvider().GetRequiredService<IOptions<AdaloOptions>>().Value;
@@ -41,8 +42,8 @@ namespace AdaloExtensionPack.Core.Tables.Services
                     {
                         services.AddScoped(
                             typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type),
-                            s => s.GetService<IAdaloTableServiceFactory>()
-                                ?.CreateCache(tablesType.Value.Type, tablesType.Value.Options));
+                            s => s.GetService<IAdaloTableCacheServiceFactory>()
+                                ?.Create(tablesType.Value.Type, tablesType.Value.Options));
 
                         EntitySetMethodInfo
                             .MakeGenericMethod(tablesType.Value.Type)

@@ -8,10 +8,6 @@ namespace AdaloExtensionPack.Core.Tables.Interfaces
     {
         IAdaloTableService<T> Create<T>(AdaloTableOptions options) where T : IAdaloEntity;
         object Create(Type type, AdaloTableOptions options);
-
-        IAdaloTableService<AdaloDynamicEntity> Create(AdaloTableOptions options);
-        IAdaloTableCacheService<T> CreateCache<T>(AdaloTableOptions options) where T : IAdaloEntity;
-        IAdaloTableCacheService<AdaloDynamicEntity> CreateCache(AdaloTableOptions options);
-        object CreateCache(Type type, AdaloTableOptions options);
+        IAdaloTableService<AdaloDynamicEntity> Create(AdaloTableOptions options); 
     }
 }
