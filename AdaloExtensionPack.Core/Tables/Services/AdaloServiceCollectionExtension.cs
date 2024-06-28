@@ -10,64 +10,63 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OData.ModelBuilder;
 
-namespace AdaloExtensionPack.Core.Tables.Services
+namespace AdaloExtensionPack.Core.Tables.Services;
+
+public static class AdaloServiceCollectionExtension
 {
-    public static class AdaloServiceCollectionExtension
+    private static readonly MethodInfo EntitySetMethodInfo = typeof(ODataConventionModelBuilder)
+        .GetMethod(nameof(ODataConventionModelBuilder.EntitySet));
+
+    public static AdaloServiceCollection AddAdalo(this IServiceCollection services,
+        Action<AdaloOptions> optionsFactory)
     {
-        private static readonly MethodInfo EntitySetMethodInfo = typeof(ODataConventionModelBuilder)
-            .GetMethod(nameof(ODataConventionModelBuilder.EntitySet));
+        services.Configure(optionsFactory);
+        services.AddHttpClient();
+        services.AddScoped<IAdaloTableServiceFactory, AdaloTableServiceFactory>();
+        services.AddScoped<IAdaloTableCacheServiceFactory, AdaloTableCacheServiceFactory>();
+        services.AddMemoryCache();
 
-        public static AdaloServiceCollection AddAdalo(this IServiceCollection services,
-            Action<AdaloOptions> optionsFactory)
+        var options = services.BuildServiceProvider().GetRequiredService<IOptions<AdaloOptions>>().Value;
+        var oDataModelBuilder = new ODataConventionModelBuilder();
+
+        foreach (var option in options.Apps)
         {
-            services.Configure(optionsFactory);
-            services.AddHttpClient();
-            services.AddScoped<IAdaloTableServiceFactory, AdaloTableServiceFactory>();
-            services.AddScoped<IAdaloTableCacheServiceFactory, AdaloTableCacheServiceFactory>();
-            services.AddMemoryCache();
-
-            var options = services.BuildServiceProvider().GetRequiredService<IOptions<AdaloOptions>>().Value;
-            var oDataModelBuilder = new ODataConventionModelBuilder();
-
-            foreach (var option in options.Apps)
+            foreach (var tablesType in option.Tables)
             {
-                foreach (var tablesType in option.Tables)
+                services.AddScoped(
+                    typeof(IAdaloTableService<>).MakeGenericType(tablesType.Value.Type),
+                    s => s.GetService<IAdaloTableServiceFactory>()
+                        ?.Create(tablesType.Value.Type, tablesType.Value.Options));
+
+                if (tablesType.Value.Options.IsCached)
                 {
                     services.AddScoped(
-                        typeof(IAdaloTableService<>).MakeGenericType(tablesType.Value.Type),
-                        s => s.GetService<IAdaloTableServiceFactory>()
+                        typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type),
+                        s => s.GetService<IAdaloTableCacheServiceFactory>()
                             ?.Create(tablesType.Value.Type, tablesType.Value.Options));
 
-                    if (tablesType.Value.Options.IsCached)
-                    {
-                        services.AddScoped(
-                            typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type),
-                            s => s.GetService<IAdaloTableCacheServiceFactory>()
-                                ?.Create(tablesType.Value.Type, tablesType.Value.Options));
-
-                        EntitySetMethodInfo
-                            .MakeGenericMethod(tablesType.Value.Type)
-                            .Invoke(oDataModelBuilder, [tablesType.Value.Type.Name.Pluralize().ToKebabCase()]);
-                    }
-                }
-
-                foreach (var viewType in option.ViewTypes)
-                {
-                    services.AddScoped(
-                        typeof(IAdaloViewService<,,>).MakeGenericType(viewType.GetType().GenericTypeArguments),
-                        typeof(AdaloViewService<,,>).MakeGenericType(viewType.GetType().GenericTypeArguments));
+                    EntitySetMethodInfo
+                        .MakeGenericMethod(tablesType.Value.Type)
+                        .Invoke(oDataModelBuilder, [tablesType.Value.Type.Name.Pluralize().ToKebabCase()]);
                 }
             }
 
-            services
-                .AddControllers(o => o.Conventions.Add(new AdaloControllerConvention()))
-                .AddOData(opts => opts
-                    .Select().Filter().OrderBy().Count()
-                    .AddRouteComponents("tables", oDataModelBuilder.GetEdmModel()))
-                .ConfigureApplicationPartManager(m =>
-                    m.FeatureProviders.Add(new AdaloControllerFeatureProvider(options)));
-
-            return new(services);
+            foreach (var viewType in option.ViewTypes)
+            {
+                services.AddScoped(
+                    typeof(IAdaloViewService<,,>).MakeGenericType(viewType.GetType().GenericTypeArguments),
+                    typeof(AdaloViewService<,,>).MakeGenericType(viewType.GetType().GenericTypeArguments));
+            }
         }
+
+        services
+            .AddControllers(o => o.Conventions.Add(new AdaloControllerConvention()))
+            .AddOData(opts => opts
+                .Select().Filter().OrderBy().Count()
+                .AddRouteComponents("tables", oDataModelBuilder.GetEdmModel()))
+            .ConfigureApplicationPartManager(m =>
+                m.FeatureProviders.Add(new AdaloControllerFeatureProvider(options)));
+
+        return new(services);
     }
 }

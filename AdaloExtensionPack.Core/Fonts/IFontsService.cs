@@ -1,9 +1,8 @@
 ﻿using SkiaSharp;
 
-namespace AdaloExtensionPack.Core.Fonts
+namespace AdaloExtensionPack.Core.Fonts;
+
+public interface IFontsService
 {
-    public interface IFontsService
-    {
-        byte[] RenderText(string text, SKTypeface font, string color, int size);
-    }
+    byte[] RenderText(string text, SKTypeface font, string color, int size);
 }

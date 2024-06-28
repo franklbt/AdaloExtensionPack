@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace AdaloExtensionPack.Core.Smtp
+namespace AdaloExtensionPack.Core.Smtp;
+
+public interface ISmtpService
 {
-    public interface ISmtpService
-    {
-        Task SendEmail(string body, string subject, string to);
-    }
+    Task SendEmail(string body, string subject, string to);
 }
