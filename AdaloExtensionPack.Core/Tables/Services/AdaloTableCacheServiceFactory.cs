@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace AdaloExtensionPack.Core.Tables.Services;
 
 public class AdaloTableCacheServiceFactory(
-    AdaloTableServiceFactory adaloTableServiceFactory,
+    IAdaloTableServiceFactory adaloTableServiceFactory,
     IServiceProvider serviceProvider,
     IMemoryCache memoryCache) : IAdaloTableCacheServiceFactory
 {
