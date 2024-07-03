@@ -11,7 +11,7 @@ public interface IAdaloTableCacheService<T> where T : IAdaloEntity
     Task<T> PostAsync(
         T payload);
 
-    Task<T> GetAsync(int recordId);
+    Task<T?> GetAsync(int recordId);
 
     Task DeleteAsync(int recordId);
 
