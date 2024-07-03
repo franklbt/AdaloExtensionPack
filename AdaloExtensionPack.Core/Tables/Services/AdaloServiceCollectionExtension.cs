@@ -15,7 +15,7 @@ namespace AdaloExtensionPack.Core.Tables.Services;
 public static class AdaloServiceCollectionExtension
 {
     private static readonly MethodInfo EntitySetMethodInfo = typeof(ODataConventionModelBuilder)
-        .GetMethod(nameof(ODataConventionModelBuilder.EntitySet));
+        .GetMethod(nameof(ODataConventionModelBuilder.EntitySet))!;
 
     public static AdaloServiceCollection AddAdalo(this IServiceCollection services,
         Action<AdaloOptions> optionsFactory)
@@ -35,15 +35,15 @@ public static class AdaloServiceCollectionExtension
             {
                 services.AddScoped(
                     typeof(IAdaloTableService<>).MakeGenericType(tablesType.Value.Type),
-                    s => s.GetService<IAdaloTableServiceFactory>()
-                        ?.Create(tablesType.Value.Type, tablesType.Value.Options));
+                    s => s.GetRequiredService<IAdaloTableServiceFactory>()
+                        .Create(tablesType.Value.Type, tablesType.Value.Options));
 
                 if (tablesType.Value.Options.IsCached)
                 {
                     services.AddScoped(
                         typeof(IAdaloTableCacheService<>).MakeGenericType(tablesType.Value.Type),
-                        s => s.GetService<IAdaloTableCacheServiceFactory>()
-                            ?.Create(tablesType.Value.Type, tablesType.Value.Options));
+                        s => s.GetRequiredService<IAdaloTableCacheServiceFactory>()
+                            .Create(tablesType.Value.Type, tablesType.Value.Options));
 
                     EntitySetMethodInfo
                         .MakeGenericMethod(tablesType.Value.Type)
