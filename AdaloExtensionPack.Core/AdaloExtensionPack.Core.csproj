@@ -7,7 +7,7 @@
         <Authors>Frank LIBOLT</Authors>
         <Company>Frank LIBOLT</Company>
         <PackageTags>
-            Adalo;dotnet;Api
+            Adalo;dotnet;API;NoCode;Data
         </PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
