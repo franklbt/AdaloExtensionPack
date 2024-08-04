@@ -11,8 +11,8 @@
         </PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <projectUrl>https://www.scalerize.fr/?content=adalo-extension-pack</projectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression> 
+        <PackageProjectUrl>https://www.scalerize.fr/?content=adalo-extension-pack</PackageProjectUrl>
         <RepositoryUrl>https://github.com/franklbt/AdaloExtensionPack</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <LangVersion>default</LangVersion>
