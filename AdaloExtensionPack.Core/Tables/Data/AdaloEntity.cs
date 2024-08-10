@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Dynamic;
 using System.Text.Json.Serialization;
 
 namespace AdaloExtensionPack.Core.Tables.Data;
